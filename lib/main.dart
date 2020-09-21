@@ -1,37 +1,28 @@
+import 'package:event_planner/screens/forgotpassword_screen.dart';
+import 'package:event_planner/screens/home_screen.dart';
+import 'package:event_planner/screens/login_screen.dart';
+import 'package:event_planner/screens/registration_screen.dart';
+import 'package:event_planner/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.blue,
-        body: SafeArea(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                  children:<Widget>[
-                    Image(
-                      width: 200.0,
-                      image: AssetImage('images/logo.png'),
-                    ),
-                    Text(
-                      'Event planner',
-                      style: TextStyle(
-                          fontSize: 40.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ]
-              ),
-            )
-        ),
-      ),
+      theme: ThemeData(fontFamily: 'NotoSans'),
+      debugShowCheckedModeBanner: false,
+      initialRoute: WelcomeScreen.id,
+      routes: {
+        WelcomeScreen.id: (context) => WelcomeScreen(),
+        LoginScreen.id: (context) => LoginScreen(),
+        RegistraionScreen.id: (context) => RegistraionScreen(),
+        ForgotPasswordScreen.id: (context) => ForgotPasswordScreen(),
+        HomeScreen.id: (context) => HomeScreen()
+      },
     );
   }
-
 }
