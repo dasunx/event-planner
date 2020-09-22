@@ -1,4 +1,8 @@
+import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/screens/add_event.dart';
+import 'package:event_planner/screens/add_guest.dart';
+import 'package:event_planner/screens/choose_event_screen.dart';
 import 'package:event_planner/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -56,12 +60,23 @@ class MainDrawer extends StatelessWidget {
           ),
           DrawerListTile(
             icon: Icons.event,
-            onPress: () {},
+            onPress: () {
+              Navigator.pushNamed(context, AddEvent.id);
+            },
             title: "Add Event",
           ),
           DrawerListTile(
             icon: Icons.person_add,
-            onPress: () {},
+            onPress: () {
+              Navigator.pushNamed(
+                context,
+                ChooseEvent.id,
+                arguments: RouteArguments(
+                    buttonName: 'Select',
+                    routeScreen: AddGuest.id,
+                    subTitle: 'Choose Event to Add guests'),
+              );
+            },
             title: "Add Guests",
           ),
           DrawerListTile(

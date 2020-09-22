@@ -1,4 +1,8 @@
+import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/components/MainDrawer.dart';
+import 'package:event_planner/constants.dart';
+import 'package:event_planner/screens/add_event.dart';
+import 'package:event_planner/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,6 +26,20 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       drawer: MainDrawer(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            AddEvent.id,
+          );
+        },
+        backgroundColor: kMainColor,
+        elevation: 10,
+        child: Icon(
+          Icons.add,
+          size: 34,
+        ),
+      ),
     );
   }
 }
