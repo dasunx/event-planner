@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/components/MainDrawer.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/add_event.dart';
 import 'package:event_planner/screens/welcome_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,7 +13,37 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+final _firestore = FirebaseFirestore.instance;
+User loggedInUser;
+
 class _HomeScreenState extends State<HomeScreen> {
+  final _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    getCurrentUser();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    loggedInUser = null;
+    super.dispose();
+  }
+
+  void getCurrentUser() async {
+    try {
+      var user = _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        print(user.email);
+      }
+    } catch (e) {
+      print('error $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,16 +54,15 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Center(
         child: Text(
-          'My Page!',
+          'My Page!- ${loggedInUser.email} ',
         ),
       ),
       drawer: MainDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(
-            context,
-            AddEvent.id,
-          );
+          _firestore.collection("events").doc(loggedInUser.uid).set({
+            "eventname": "Birthday",
+          }).then((value) => print('scc'));
         },
         backgroundColor: kMainColor,
         elevation: 10,
