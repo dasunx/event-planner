@@ -1,5 +1,6 @@
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/screens/todolist/view_todo.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -9,6 +10,7 @@ Widget buildEventCard(BuildContext context, int index, List<Event> items,
   return GestureDetector(
     onTap: () {
       myFocusNode.unfocus();
+
       Navigator.pushNamed(context, routeId, arguments: event);
     },
     child: Container(
@@ -88,7 +90,7 @@ Widget buildEventCard(BuildContext context, int index, List<Event> items,
               },
               blendMode: BlendMode.dstATop,
               child: Image.asset(
-                'images/event${event.id}.jpg',
+                'images/event${event.userId}.jpg',
                 height: 150,
               ),
             ),
