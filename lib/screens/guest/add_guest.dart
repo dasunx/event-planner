@@ -1,8 +1,11 @@
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/classes/Guest.dart';
+import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/screens/guest/view_guests.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddGuest extends StatefulWidget {
   static const String id = 'add_guest';
@@ -15,6 +18,9 @@ class _AddGuestState extends State<AddGuest> {
   FocusNode myFocusNode;
   @override
   bool _radioValue = true;
+  String email;
+  String name;
+  String note;
 
   @override
   void initState() {
@@ -66,6 +72,9 @@ class _AddGuestState extends State<AddGuest> {
                 child: Column(
                   children: [
                     TextField(
+                      onChanged: (value) {
+                        email = value;
+                      },
                       decoration: kTextFieldDecoration.copyWith(
                           hintText: "Guest email", labelText: 'Email'),
                     ),
@@ -73,6 +82,9 @@ class _AddGuestState extends State<AddGuest> {
                       height: 10,
                     ),
                     TextField(
+                      onChanged: (value) {
+                        name = value;
+                      },
                       decoration: kTextFieldDecoration.copyWith(
                           hintText: "Guest Name", labelText: 'Name'),
                     ),
@@ -99,6 +111,9 @@ class _AddGuestState extends State<AddGuest> {
                       height: 10,
                     ),
                     TextField(
+                      onChanged: (value) {
+                        note = value;
+                      },
                       keyboardType: TextInputType.multiline,
                       maxLines: 3,
                       decoration: kTextFieldDecoration.copyWith(
@@ -112,9 +127,12 @@ class _AddGuestState extends State<AddGuest> {
                 padding: const EdgeInsets.all(8.0),
                 child: button(
                   onPress: () {
-                    event.guests.add(Guest('testing@gmail.com', "Tester", false,
-                        "Thi is sis fsd nfsdn sdfs", event.id));
-                    print(event.guests);
+                    event.guests.add(
+                        Guest(email, name, _radioValue, note, event.userId));
+
+                    Navigator.pushNamed(context, ViewGuests.id,
+                        arguments: event);
+                    showToast("Guest added");
                   },
                   title: "Save",
                 ),

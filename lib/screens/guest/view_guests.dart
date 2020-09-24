@@ -1,7 +1,9 @@
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/classes/Guest.dart';
+import 'package:event_planner/components/AlertDialog.dart';
 import 'package:event_planner/components/EmptyList.dart';
 import 'package:event_planner/components/SearchBar.dart';
+import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
@@ -14,6 +16,7 @@ class ViewGuests extends StatefulWidget {
 }
 
 class _ViewGuestsState extends State<ViewGuests> {
+  TextEditingController myCon = TextEditingController();
   FocusNode myFocusNode;
   var time = 1;
   Event event;
@@ -51,8 +54,7 @@ class _ViewGuestsState extends State<ViewGuests> {
   }
 
   void deleteGuest(int index) {
-    event.guests
-        .add(Guest("test@gmail.com", "Test", false, "Notetestst", event.id));
+    event.guests.removeAt(index);
     setState(() {
       guests.clear();
       guests.addAll(event.guests);
@@ -123,13 +125,9 @@ class _ViewGuestsState extends State<ViewGuests> {
                     flex: 1,
                     child: Padding(
                       padding: EdgeInsets.only(top: 5, left: 40, right: 40),
-                      child: buildSearch(
-                        myFocusNode,
-                        "search guest",
-                        (value) {
-                          filterResult(value);
-                        },
-                      ),
+                      child: buildSearch(myFocusNode, "search guest", (value) {
+                        filterResult(value);
+                      }, myCon),
                     ),
                   ),
                 ),
@@ -264,7 +262,19 @@ class _ViewGuestsState extends State<ViewGuests> {
                           flex: 1,
                           child: IconButton(
                             onPressed: () {
-                              deleteGuest(index);
+                              showAlertDialog(
+                                  context,
+                                  "Delete guest",
+                                  "Are you sure, do you need to delete this guest?",
+                                  "Delete", () {
+                                deleteGuest(index);
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                                showToast("Guest deleted");
+                              }, () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                              });
                             },
                             icon: Icon(
                               Icons.delete_outline,
