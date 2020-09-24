@@ -17,7 +17,7 @@ class ChooseEvent extends StatefulWidget {
 
 class _ChooseEventState extends State<ChooseEvent> {
   RouteArguments args;
-
+  TextEditingController myCon = TextEditingController();
   FocusNode myFocusNode;
   final EventBrain eb = EventBrain();
   var eventList;
@@ -97,7 +97,7 @@ class _ChooseEventState extends State<ChooseEvent> {
                       child:
                           buildSearch(myFocusNode, "Search an event", (value) {
                         filterSearchResults(value);
-                      }),
+                      }, myCon),
                     )
                   ],
                 ),

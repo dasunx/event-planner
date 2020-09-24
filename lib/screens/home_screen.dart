@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/classes/EventBrain.dart';
@@ -23,15 +25,42 @@ final _firestore = FirebaseFirestore.instance;
 User loggedInUser;
 
 class _HomeScreenState extends State<HomeScreen> {
+  TextEditingController myCon = TextEditingController();
   final _auth = FirebaseAuth.instance;
   FocusNode myFocusNode;
   final EventBrain eb = EventBrain();
   var eventList;
   var items = List<Event>();
+  var i = 0;
+
+  void printData() async {
+    _firestore
+        .collection('events')
+        .where('id', isEqualTo: loggedInUser.uid)
+        .snapshots()
+        .listen((event) {
+      event.docs.forEach((element) {
+        element.data()['guests'].forEach((e) {
+          setState(() {
+            i++;
+          });
+          print(i);
+        });
+      });
+    });
+    // CollectionReference ref = _firestore.collection('events');
+    // QuerySnapshot eventQuery =
+    //     await ref.where("id", isEqualTo: loggedInUser.uid).get();
+    // eventQuery.docs.forEach((element) {
+    //   print(loggedInUser.uid);
+    //   element.data()['guests'].forEach((item) => {print(item['title'])});
+    // });
+  }
 
   @override
   void initState() {
     getCurrentUser();
+    printData();
     eventList = eb.eventList;
     items.addAll(eventList);
     myFocusNode = FocusNode();
@@ -83,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(
           'Event Planner',
@@ -104,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "Search Event",
+                        "Search Event $i",
                         style: kTitleTextStyle,
                       ),
                     ),
@@ -113,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child:
                           buildSearch(myFocusNode, "Search an event", (value) {
                         filterSearchResults(value);
-                      }),
+                      }, myCon),
                     )
                   ],
                 ),
