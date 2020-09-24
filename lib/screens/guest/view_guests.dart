@@ -4,7 +4,7 @@ import 'package:event_planner/components/EmptyList.dart';
 import 'package:event_planner/components/SearchBar.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
-import 'package:event_planner/screens/add_guest.dart';
+import 'package:event_planner/screens/guest/add_guest.dart';
 import 'package:flutter/material.dart';
 
 class ViewGuests extends StatefulWidget {

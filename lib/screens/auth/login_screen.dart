@@ -1,25 +1,58 @@
+import 'package:event_planner/components/TextButton.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
-import 'package:event_planner/screens/forgotpassword_screen.dart';
+import 'package:event_planner/screens/auth/forgotpassword_screen.dart';
 import 'package:event_planner/screens/home_screen.dart';
-import 'package:event_planner/screens/login_screen.dart';
+import 'package:event_planner/screens/auth/registration_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_view.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-class RegistraionScreen extends StatefulWidget {
-  static const String id = 'registration_screen';
+class LoginScreen extends StatefulWidget {
+  static const String id = 'login_screen';
   @override
-  _RegistraionScreenState createState() => _RegistraionScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _RegistraionScreenState extends State<RegistraionScreen> {
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController _controller = TextEditingController();
   bool obsecure = true;
   final _auth = FirebaseAuth.instance;
-  String userName;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
   String email;
   String password;
   bool showLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<User> _testSignInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final User user = (await _auth.signInWithCredential(credential)).user;
+    assert(user.email != null);
+    assert(user.displayName != null);
+    assert(!user.isAnonymous);
+    assert(await user.getIdToken() != null);
+
+    final User currentUser = await _auth.currentUser;
+
+    return user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +123,7 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                         margin: EdgeInsets.only(top: keyboardH > 0 ? 20 : 50),
                         child: Center(
                           child: Text(
-                            "Register",
+                            "Login",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 40,
@@ -133,29 +166,9 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                             ),
                             child: TextField(
                               onChanged: (value) {
-                                userName = value;
-                              },
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Username",
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey[400],
-                                  )),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.grey[100],
-                                ),
-                              ),
-                            ),
-                            child: TextField(
-                              onChanged: (value) {
                                 email = value;
                               },
+                              controller: _controller,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Email address",
@@ -165,7 +178,7 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(6.0),
                             decoration: BoxDecoration(
                               border: Border(
                                 bottom: BorderSide(
@@ -174,25 +187,28 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                               ),
                             ),
                             child: TextField(
+                              obscureText: obsecure,
                               onChanged: (value) {
                                 password = value;
                               },
-                              obscureText: obsecure,
                               decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Password",
                                   suffixIcon: GestureDetector(
                                     onTap: () {
                                       setState(() {
                                         obsecure = !obsecure;
                                       });
                                     },
-                                    child: Icon(
-                                      Icons.remove_red_eye,
-                                      color:
-                                          obsecure ? Colors.grey : Colors.red,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 0.0),
+                                      child: Icon(
+                                        Icons.remove_red_eye,
+                                        color:
+                                            obsecure ? Colors.grey : Colors.red,
+                                      ),
                                     ),
                                   ),
+                                  border: InputBorder.none,
+                                  hintText: "Password",
                                   hintStyle: TextStyle(
                                     color: Colors.grey[400],
                                   )),
@@ -201,52 +217,67 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    button(
-                      title: "Register",
-                      onPress: () async {
-                        setState(() {
-                          showLoading = true;
-                        });
-                        try {
-                          final newUser =
-                              await _auth.createUserWithEmailAndPassword(
-                                  email: email, password: password);
-                          if (newUser != null) {
-                            final user = _auth.currentUser;
-                            user.updateProfile(displayName: userName);
+                    Padding(
+                      padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
+                      child: button(
+                        title: "Login",
+                        onPress: () async {
+                          setState(() {
+                            showLoading = true;
+                          });
 
-                            Navigator.pushNamed(context, HomeScreen.id);
+                          try {
+                            if (email != null && password != null) {
+                              final user =
+                                  await _auth.signInWithEmailAndPassword(
+                                      email: email, password: password);
+
+                              if (user != null) {
+                                Navigator.pushNamed(context, HomeScreen.id);
+                                _controller.clear();
+                              }
+                            }
+
+                            setState(() {
+                              showLoading = false;
+                            });
+                          } catch (e) {
+                            print(e);
+
+                            setState(() {
+                              showLoading = false;
+                            });
                           }
-
-                          setState(() {
-                            showLoading = false;
-                          });
-                        } catch (e) {
-                          print(e);
-                          setState(() {
-                            showLoading = false;
-                          });
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: TextButton(
+                        text: "Forgot password?",
+                        onPress: () {
+                          Navigator.pushNamed(context, ForgotPasswordScreen.id);
+                        },
+                      ),
+                    ),
+                    TextButton(
+                      text: "New User? Create account here",
+                      onPress: () {
+                        Navigator.pushNamed(context, RegistraionScreen.id);
+                      },
+                      textSize: 17.0,
+                      textWeight: FontWeight.bold,
+                    ),
+                    // with custom text
+                    SignInButton(
+                      Buttons.GoogleDark,
+                      text: "Sign in with Google",
+                      onPressed: () async {
+                        User user = await _testSignInWithGoogle();
+                        if (user != null) {
+                          Navigator.pushNamed(context, HomeScreen.id);
                         }
                       },
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        "Already a member? Sign in here",
-                        style: TextStyle(
-                          color: kMainColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                     )
                   ],
                 ),
@@ -256,6 +287,5 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
         ),
       ),
     );
-    ;
   }
 }

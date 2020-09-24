@@ -1,14 +1,15 @@
 import 'package:event_planner/constants.dart';
-import 'package:event_planner/screens/add_event.dart';
-import 'package:event_planner/screens/add_guest.dart';
-import 'package:event_planner/screens/add_todo.dart';
-import 'package:event_planner/screens/choose_event_screen.dart';
-import 'package:event_planner/screens/forgotpassword_screen.dart';
+import 'package:event_planner/screens/event/add_event.dart';
+import 'package:event_planner/screens/guest/add_guest.dart';
+import 'package:event_planner/screens/todolist/add_todo.dart';
+import 'package:event_planner/screens/event/choose_event_screen.dart';
+import 'package:event_planner/screens/auth/forgotpassword_screen.dart';
 import 'package:event_planner/screens/home_screen.dart';
-import 'package:event_planner/screens/login_screen.dart';
-import 'package:event_planner/screens/registration_screen.dart';
-import 'package:event_planner/screens/view_guests.dart';
-import 'package:event_planner/screens/view_todo.dart';
+import 'package:event_planner/screens/auth/login_screen.dart';
+import 'package:event_planner/screens/auth/registration_screen.dart';
+import 'package:event_planner/screens/event/view_event.dart';
+import 'package:event_planner/screens/guest/view_guests.dart';
+import 'package:event_planner/screens/todolist/view_todo.dart';
 import 'package:event_planner/screens/welcome_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         ForgotPasswordScreen.id: (context) => ForgotPasswordScreen(),
         HomeScreen.id: (context) => HomeScreen(),
         AddEvent.id: (context) => AddEvent(),
+        ViewEvent.id: (context) => ViewEvent(),
         ChooseEvent.id: (context) => ChooseEvent(),
         AddGuest.id: (context) => AddGuest(),
         ViewGuests.id: (context) => ViewGuests(),

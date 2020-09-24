@@ -1,12 +1,13 @@
 import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/constants.dart';
-import 'package:event_planner/screens/add_event.dart';
-import 'package:event_planner/screens/add_guest.dart';
-import 'package:event_planner/screens/add_todo.dart';
-import 'package:event_planner/screens/choose_event_screen.dart';
-import 'package:event_planner/screens/login_screen.dart';
-import 'package:event_planner/screens/view_guests.dart';
-import 'package:event_planner/screens/view_todo.dart';
+import 'package:event_planner/screens/event/add_event.dart';
+import 'package:event_planner/screens/guest/add_guest.dart';
+import 'package:event_planner/screens/todolist/add_todo.dart';
+import 'package:event_planner/screens/event/choose_event_screen.dart';
+import 'package:event_planner/screens/home_screen.dart';
+import 'package:event_planner/screens/auth/login_screen.dart';
+import 'package:event_planner/screens/guest/view_guests.dart';
+import 'package:event_planner/screens/todolist/view_todo.dart';
 import 'package:event_planner/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -82,6 +83,13 @@ class _MainDrawerState extends State<MainDrawer> {
               ),
               color: kMainColor,
             ),
+          ),
+          DrawerListTile(
+            icon: Icons.home,
+            onPress: () {
+              Navigator.pushNamed(context, HomeScreen.id);
+            },
+            title: "Home",
           ),
           DrawerListTile(
             icon: Icons.event,

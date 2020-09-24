@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/classes/EventBrain.dart';
 import 'package:event_planner/classes/Guest.dart';
@@ -7,23 +6,18 @@ import 'package:event_planner/components/EventList.dart';
 import 'package:event_planner/components/MainDrawer.dart';
 import 'package:event_planner/components/SearchBar.dart';
 import 'package:event_planner/constants.dart';
-import 'package:event_planner/screens/event/add_event.dart';
-import 'package:event_planner/screens/event/view_event.dart';
-import 'package:event_planner/screens/welcome_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class HomeScreen extends StatefulWidget {
-  static const String id = 'home_screen';
+class ChooseEvent extends StatefulWidget {
+  static const String id = 'choose_event';
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _ChooseEventState createState() => _ChooseEventState();
 }
 
-final _firestore = FirebaseFirestore.instance;
-User loggedInUser;
+class _ChooseEventState extends State<ChooseEvent> {
+  RouteArguments args;
 
-class _HomeScreenState extends State<HomeScreen> {
-  final _auth = FirebaseAuth.instance;
   FocusNode myFocusNode;
   final EventBrain eb = EventBrain();
   var eventList;
@@ -31,7 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    getCurrentUser();
     eventList = eb.eventList;
     items.addAll(eventList);
     myFocusNode = FocusNode();
@@ -41,20 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     myFocusNode.dispose();
-    loggedInUser = null;
     super.dispose();
-  }
-
-  void getCurrentUser() async {
-    try {
-      var user = _auth.currentUser;
-      if (user != null) {
-        loggedInUser = user;
-        print(user.email);
-      }
-    } catch (e) {
-      print('error $e');
-    }
   }
 
   void filterSearchResults(String query) {
@@ -82,12 +62,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          'Event Planner',
+          args.subTitle,
         ),
       ),
+      drawer: MainDrawer(),
       body: new GestureDetector(
         onTap: () {
           myFocusNode.unfocus();
@@ -104,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "Search Event",
+                        "Select event to ${args.subTitle}",
                         style: kTitleTextStyle,
                       ),
                     ),
@@ -125,23 +109,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: new ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (BuildContext context, int index) =>
-                        buildEventCard(
-                            context, index, items, ViewEvent.id, myFocusNode)),
+                        buildEventCard(context, index, items, args.routeScreen,
+                            myFocusNode)),
               ),
             ),
           ],
-        ),
-      ),
-      drawer: MainDrawer(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, AddEvent.id);
-        },
-        backgroundColor: kMainColor,
-        elevation: 10,
-        child: Icon(
-          Icons.add,
-          size: 34,
         ),
       ),
     );
