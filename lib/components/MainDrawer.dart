@@ -2,6 +2,7 @@ import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/event/add_event.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
+import 'package:event_planner/screens/shoppinglist/view_shoppinglsit.dart';
 import 'package:event_planner/screens/todolist/add_todo.dart';
 import 'package:event_planner/screens/event/choose_event_screen.dart';
 import 'package:event_planner/screens/home_screen.dart';
@@ -96,7 +97,7 @@ class _MainDrawerState extends State<MainDrawer> {
             onPress: () {
               Navigator.pushNamed(context, AddEvent.id);
             },
-            title: "Add Event",
+            title: "Event",
           ),
           DrawerListTile(
             icon: Icons.person_add,
@@ -105,7 +106,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 context,
                 ChooseEvent.id,
                 arguments: RouteArguments(
-                    routeScreen: AddGuest.id, subTitle: 'Add guests'),
+                    routeScreen: AddGuest.id, subTitle: 'add guests'),
               );
             },
             title: "Add Guests",
@@ -116,11 +117,24 @@ class _MainDrawerState extends State<MainDrawer> {
               Navigator.pushNamed(
                 context,
                 ChooseEvent.id,
-                arguments: RouteArguments(
-                    routeScreen: ViewToDo.id, subTitle: 'Add To-Do'),
+                arguments:
+                    RouteArguments(routeScreen: ViewToDo.id, subTitle: 'To-Do'),
               );
             },
             title: "Add TO-DO",
+          ),
+          DrawerListTile(
+            icon: Icons.shopping_cart,
+            onPress: () {
+              Navigator.pushNamed(
+                context,
+                ChooseEvent.id,
+                arguments: RouteArguments(
+                    routeScreen: ViewShoppingList.id,
+                    subTitle: 'Shopping List'),
+              );
+            },
+            title: "Shopping List",
           ),
           DrawerListTile(
             icon: Icons.monetization_on,

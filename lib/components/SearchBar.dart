@@ -1,9 +1,10 @@
 import 'package:event_planner/constants.dart';
 import 'package:flutter/material.dart';
 
-TextField buildSearch(
-    FocusNode myFocusNode, String hintText, Function onChange) {
+TextField buildSearch(FocusNode myFocusNode, String hintText, Function onChange,
+    TextEditingController myCon) {
   return TextField(
+    controller: myCon,
     focusNode: myFocusNode,
     onChanged: onChange,
     decoration: InputDecoration(
