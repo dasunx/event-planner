@@ -2,14 +2,39 @@ import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/add_event.dart';
 import 'package:event_planner/screens/add_guest.dart';
+import 'package:event_planner/screens/add_todo.dart';
 import 'package:event_planner/screens/choose_event_screen.dart';
+import 'package:event_planner/screens/login_screen.dart';
+import 'package:event_planner/screens/view_guests.dart';
+import 'package:event_planner/screens/view_todo.dart';
 import 'package:event_planner/screens/welcome_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class MainDrawer extends StatelessWidget {
-  const MainDrawer({
-    Key key,
-  }) : super(key: key);
+class MainDrawer extends StatefulWidget {
+  @override
+  _MainDrawerState createState() => _MainDrawerState();
+}
+
+User loggedInUser;
+
+class _MainDrawerState extends State<MainDrawer> {
+  final _auth = FirebaseAuth.instance;
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+      }
+    } catch (e) {
+      print('error $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +51,7 @@ class MainDrawer extends StatelessWidget {
               bottom: 20.0,
             ),
             accountName: Text(
-              "Dasun Ekanayake",
+              loggedInUser.displayName,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18.0,
@@ -34,7 +59,7 @@ class MainDrawer extends StatelessWidget {
               ),
             ),
             accountEmail: Text(
-              "mwdasun@gmail.com",
+              loggedInUser.email,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
@@ -72,16 +97,21 @@ class MainDrawer extends StatelessWidget {
                 context,
                 ChooseEvent.id,
                 arguments: RouteArguments(
-                    buttonName: 'Select',
-                    routeScreen: AddGuest.id,
-                    subTitle: 'Choose Event to Add guests'),
+                    routeScreen: AddGuest.id, subTitle: 'Add guests'),
               );
             },
             title: "Add Guests",
           ),
           DrawerListTile(
             icon: Icons.done,
-            onPress: () {},
+            onPress: () {
+              Navigator.pushNamed(
+                context,
+                ChooseEvent.id,
+                arguments: RouteArguments(
+                    routeScreen: ViewToDo.id, subTitle: 'Add To-Do'),
+              );
+            },
             title: "Add TO-DO",
           ),
           DrawerListTile(
@@ -99,7 +129,27 @@ class MainDrawer extends StatelessWidget {
             icon: Icons.dashboard,
             onPress: () {},
             title: "Dashboard",
-          )
+          ),
+          DrawerListTile(
+            icon: Icons.person_add,
+            onPress: () {
+              Navigator.pushNamed(
+                context,
+                ChooseEvent.id,
+                arguments: RouteArguments(
+                    routeScreen: ViewGuests.id, subTitle: 'View guests'),
+              );
+            },
+            title: "View Guests",
+          ),
+          DrawerListTile(
+            icon: Icons.monetization_on,
+            onPress: () {
+              _auth.signOut();
+              Navigator.popAndPushNamed(context, LoginScreen.id);
+            },
+            title: "Sign out",
+          ),
         ],
       ),
     );

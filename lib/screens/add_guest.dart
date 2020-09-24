@@ -1,4 +1,7 @@
 import 'package:event_planner/classes/Event.dart';
+import 'package:event_planner/classes/Guest.dart';
+import 'package:event_planner/components/button.dart';
+import 'package:event_planner/constants.dart';
 import 'package:flutter/material.dart';
 
 class AddGuest extends StatefulWidget {
@@ -9,19 +12,126 @@ class AddGuest extends StatefulWidget {
 
 class _AddGuestState extends State<AddGuest> {
   Event event;
+  FocusNode myFocusNode;
   @override
+  bool _radioValue = true;
+
+  @override
+  void initState() {
+    myFocusNode = FocusNode();
+    super.initState();
+  }
+
+  void _handleRadioInput(bool value) {
+    setState(() {
+      _radioValue = value;
+    });
+  }
+
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     event = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Add guests',
+          '${event.title}',
         ),
       ),
       body: Container(
-        child: Center(
-          child: Text(
-            event.title,
+        margin: EdgeInsets.only(left: 10, right: 10),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    "Add Guest",
+                    style: kTitleTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 28.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: kTextFieldDecoration.copyWith(
+                          hintText: "Guest email", labelText: 'Email'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      decoration: kTextFieldDecoration.copyWith(
+                          hintText: "Guest Name", labelText: 'Name'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Radio(
+                          value: true,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioInput,
+                        ),
+                        Text('Male'),
+                        Radio(
+                          value: false,
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioInput,
+                        ),
+                        Text('Female'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 3,
+                      decoration: kTextFieldDecoration.copyWith(
+                          hintText: "Notes", labelText: 'Notes'),
+                    ),
+                  ],
+                ),
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: button(
+                  onPress: () {
+                    event.guests.add(Guest('testing@gmail.com', "Tester", false,
+                        "Thi is sis fsd nfsdn sdfs", event.id));
+                    print(event.guests);
+                  },
+                  title: "Save",
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: button(
+                  onPress: () {
+                    Navigator.pop(context);
+                  },
+                  title: "Cancel",
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              )
+            ],
           ),
         ),
       ),

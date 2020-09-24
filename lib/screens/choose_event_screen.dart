@@ -1,6 +1,9 @@
 import 'package:event_planner/classes/Event.dart';
+import 'package:event_planner/classes/EventBrain.dart';
+import 'package:event_planner/classes/Guest.dart';
 import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/components/MainDrawer.dart';
+import 'package:event_planner/components/SearchBar.dart';
 import 'package:event_planner/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -13,26 +16,15 @@ class ChooseEvent extends StatefulWidget {
 
 class _ChooseEventState extends State<ChooseEvent> {
   RouteArguments args;
-  TextEditingController editingController = TextEditingController();
+
   FocusNode myFocusNode;
-  final List<Event> eventList = [
-    Event("Supun Birthday party", DateTime(2020, 11, 01),
-        DateTime(2020, 11, 02), 50000.0, 1),
-    Event("Banda's Wedding", DateTime(2020, 12, 06), DateTime(2020, 12, 09),
-        150000.0, 2),
-    Event("Mahesh Engagement party", DateTime(2020, 11, 12),
-        DateTime(2020, 11, 12), 70000.0, 3),
-    Event("Nolimt public gathering", DateTime(2020, 12, 01),
-        DateTime(2020, 12, 02), 134000.0, 4),
-    Event("Relational office meeting", DateTime(2021, 01, 01),
-        DateTime(2020, 01, 02), 23000.0, 5),
-    Event("Amila's Birthday", DateTime(2020, 02, 02), DateTime(2021, 02, 02),
-        40000.0, 6)
-  ];
+  final EventBrain eb = EventBrain();
+  var eventList;
   var items = List<Event>();
 
   @override
   void initState() {
+    eventList = eb.eventList;
     items.addAll(eventList);
     myFocusNode = FocusNode();
     super.initState();
@@ -87,58 +79,31 @@ class _ChooseEventState extends State<ChooseEvent> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Container(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.only(left: 40, right: 40),
-                      child: TextField(
-                        focusNode: myFocusNode,
-                        onChanged: (value) {
-                          filterSearchResults(value);
-                        },
-                        controller: editingController,
-                        decoration: InputDecoration(
-                          labelText: "Search",
-                          labelStyle: TextStyle(
-                            color: Colors.black,
-                          ),
-                          hintText: "Search event",
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: kMainColorOpacity,
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(
-                                10.0,
-                              ),
-                            ),
-                          ),
-                          focusedBorder: new OutlineInputBorder(
-                            borderRadius: new BorderRadius.circular(
-                              10.0,
-                            ),
-                            borderSide: BorderSide(
-                              color: kMainColor,
-                              width: 2.0,
-                            ),
-                          ),
-                        ),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Select event to ${args.subTitle}",
+                        style: kTitleTextStyle,
                       ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5, left: 40, right: 40),
+                      child:
+                          buildSearch(myFocusNode, "Search an event", (value) {
+                        filterSearchResults(value);
+                      }),
                     )
                   ],
                 ),
               ),
             ),
             Expanded(
-              flex: 6,
+              flex: 8,
               child: Container(
                 child: new ListView.builder(
                     itemCount: items.length,
@@ -174,18 +139,17 @@ class _ChooseEventState extends State<ChooseEvent> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 6, right: 8.0, top: 4, bottom: 30),
+                            left: 6, right: 8.0, top: 4, bottom: 20),
                         child: Icon(Icons.event),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 6, right: 8.0, top: 4, bottom: 30),
-                        child: Text(
-                          event.title,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                            left: 6, right: 8.0, top: 4, bottom: 20),
+                        child: Container(
+                          width: 250,
+                          child: Text(
+                            event.title,
+                            style: kTitleTextStyle,
                           ),
                         ),
                       ),
