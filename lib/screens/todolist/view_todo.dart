@@ -70,7 +70,7 @@ class _ViewToDoState extends State<ViewToDo> {
   Widget build(BuildContext context) {
     if (time == 1) {
       event = ModalRoute.of(context).settings.arguments;
-      if (event.guests != null) {
+      if (event.todoList != null) {
         toDoLists = event.todoList;
         toDoItems.addAll(toDoLists);
         if (event.guests.length > 0) {
@@ -143,7 +143,7 @@ class _ViewToDoState extends State<ViewToDo> {
                         ),
                       )
                     : EmptyList(
-                        title: "No one here yet!",
+                        title: "It's empty out here!",
                         onPress: () {
                           Navigator.popAndPushNamed(context, AddToDo.id,
                               arguments: event);
@@ -191,7 +191,7 @@ class _ViewToDoState extends State<ViewToDo> {
                       children: [
                         Expanded(
                           child: Text(
-                            item.title,
+                            item.title.toString(),
                             style: TextStyle(
                                 decoration: item.completed
                                     ? TextDecoration.lineThrough

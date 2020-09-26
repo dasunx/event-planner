@@ -5,7 +5,9 @@ class Guest {
   final String name;
   final bool gender;
   final String note;
-  final String eventId;
 
-  Guest(this.email, this.name, this.gender, this.note, this.eventId);
+  Guest(this.email, this.name, this.gender, this.note);
+
+  Map<String, dynamic> toJson() =>
+      {'email': email, 'name': name, 'gender': gender, 'note': note};
 }

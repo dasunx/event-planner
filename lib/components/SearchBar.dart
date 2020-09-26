@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 TextField buildSearch(FocusNode myFocusNode, String hintText, Function onChange,
     TextEditingController myCon) {
   return TextField(
+    autofocus: false,
     controller: myCon,
     focusNode: myFocusNode,
     onChanged: onChange,

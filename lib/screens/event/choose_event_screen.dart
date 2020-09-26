@@ -1,11 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_planner/classes/Event.dart';
-import 'package:event_planner/classes/EventBrain.dart';
+
 import 'package:event_planner/classes/Guest.dart';
 import 'package:event_planner/classes/RouteArguments.dart';
+import 'package:event_planner/classes/ShoppingList.dart';
+import 'package:event_planner/classes/ToDoList.dart';
+import 'package:event_planner/components/EmptyList.dart';
 import 'package:event_planner/components/EventList.dart';
 import 'package:event_planner/components/MainDrawer.dart';
 import 'package:event_planner/components/SearchBar.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/screens/event/add_event.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -15,18 +21,74 @@ class ChooseEvent extends StatefulWidget {
   _ChooseEventState createState() => _ChooseEventState();
 }
 
+final _firestore = FirebaseFirestore.instance;
+User loggedInUser;
+final _auth = FirebaseAuth.instance;
+
 class _ChooseEventState extends State<ChooseEvent> {
   RouteArguments args;
   TextEditingController myCon = TextEditingController();
   FocusNode myFocusNode;
-  final EventBrain eb = EventBrain();
-  var eventList;
+  bool conditionx = false;
+  var eventList = List<Event>();
   var items = List<Event>();
+  var i = 0;
+
+  void getData() async {
+    _firestore
+        .collection('events')
+        .where('userId', isEqualTo: loggedInUser.uid)
+        .snapshots()
+        .listen((event) {
+      eventList.clear();
+      event.docs.forEach((element) {
+        List<Guest> guests = new List<Guest>();
+        List<ToDoList> todos = new List<ToDoList>();
+        List<ShoppingList> shoppingList = new List<ShoppingList>();
+        element.data()['guests'].forEach((e) {
+          Guest tempGuest =
+              new Guest(e['email'], e['name'], e['gender'], e['note']);
+          guests.add(tempGuest);
+        });
+        element.data()['todoList'].forEach((e) {
+          ToDoList tempTodo =
+              new ToDoList(e['title'], e['completed'], e['details']);
+          todos.add(tempTodo);
+        });
+        element.data()['shoppingList'].forEach((e) {
+          ShoppingList sList = new ShoppingList(
+              e['name'], e['qty'], e['price'], e['details'], e['purchased']);
+          shoppingList.add(sList);
+          print(sList);
+        });
+        Event ev = new Event(
+            element.data()['title'],
+            element.data()['location'],
+            element.data()['startDate'].toDate(),
+            DateTime(2020, 11, 02),
+            20330,
+            loggedInUser.uid,
+            guests,
+            shoppingList,
+            todos);
+
+        ev.id = element.id;
+
+        eventList.add(ev);
+      });
+      items.clear();
+      items.addAll(eventList);
+      items.sort((a, b) => a.startDate.compareTo(b.startDate));
+    });
+  }
 
   @override
   void initState() {
-    eventList = eb.eventList;
-    items.addAll(eventList);
+    getCurrentUser();
+    getData();
+    if (eventList.length > 0) {
+      conditionx = true;
+    }
     myFocusNode = FocusNode();
     super.initState();
   }
@@ -35,6 +97,17 @@ class _ChooseEventState extends State<ChooseEvent> {
   void dispose() {
     myFocusNode.dispose();
     super.dispose();
+  }
+
+  void getCurrentUser() async {
+    try {
+      var user = _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+      }
+    } catch (e) {
+      print('error $e');
+    }
   }
 
   void filterSearchResults(String query) {
@@ -63,6 +136,9 @@ class _ChooseEventState extends State<ChooseEvent> {
   @override
   Widget build(BuildContext context) {
     args = ModalRoute.of(context).settings.arguments;
+    setState(() {
+      conditionx = eventList.length >= 0 ? true : false;
+    });
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
@@ -71,15 +147,15 @@ class _ChooseEventState extends State<ChooseEvent> {
           args.subTitle,
         ),
       ),
-      drawer: MainDrawer(),
-      body: new GestureDetector(
-        onTap: () {
-          myFocusNode.unfocus();
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
+      drawer: MainDrawer(
+        id: args.routeScreen,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Visibility(
+            visible: conditionx,
+            child: Expanded(
               flex: 2,
               child: Container(
                 child: Column(
@@ -88,7 +164,7 @@ class _ChooseEventState extends State<ChooseEvent> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "Select event to ${args.subTitle}",
+                        "Search Event",
                         style: kTitleTextStyle,
                       ),
                     ),
@@ -103,18 +179,52 @@ class _ChooseEventState extends State<ChooseEvent> {
                 ),
               ),
             ),
-            Expanded(
-              flex: 8,
-              child: Container(
-                child: new ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        buildEventCard(context, index, items, args.routeScreen,
-                            myFocusNode)),
-              ),
+          ),
+          Expanded(
+            flex: 8,
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore
+                  .collection('events')
+                  .where('userId', isEqualTo: loggedInUser.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                List<Text> titles = [];
+
+                if (!snapshot.hasData || snapshot.data.docs.length <= 0) {
+                  return Column(
+                    children: [
+                      EmptyList(
+                        title: "No Events yet!",
+                        image: "images/noevent.png",
+                        onPress: () {
+                          Navigator.popAndPushNamed(context, AddEvent.id);
+                        },
+                        buttonText: "Add Event",
+                      ),
+                    ],
+                  );
+                }
+
+                FocusNode myFocusNode = new FocusNode();
+
+                return Column(
+                  children: [
+                    Expanded(
+                      flex: 8,
+                      child: Container(
+                        child: new ListView.builder(
+                            itemCount: items.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                buildEventCard(context, index, items,
+                                    args.routeScreen, myFocusNode)),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

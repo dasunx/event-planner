@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:event_planner/components/TextButton.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
@@ -28,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String email;
   String password;
   bool showLoading = false;
-
+  bool error = false;
   @override
   void initState() {
     super.initState();
@@ -38,19 +41,33 @@ class _LoginScreenState extends State<LoginScreen> {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-
     final User user = (await _auth.signInWithCredential(credential)).user;
     assert(user.email != null);
     assert(user.displayName != null);
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
-
     final User currentUser = await _auth.currentUser;
+    return user;
+  }
 
+  Future<User> _signInWithFacebook() async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    final User user = (await _auth.signInWithCredential(credential)).user;
+    assert(user.email != null);
+    assert(user.displayName != null);
+    assert(!user.isAnonymous);
+    assert(await user.getIdToken() != null);
+    final User currentUser = await _auth.currentUser;
     return user;
   }
 
@@ -58,231 +75,266 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double keyboardH = MediaQuery.of(context).viewInsets.bottom;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: ModalProgressHUD(
-        inAsyncCall: showLoading,
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              AnimatedContainer(
-                duration: Duration(seconds: 1),
-                curve: Curves.fastOutSlowIn,
-                height: keyboardH > 0 ? 400 - keyboardH : 300,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('images/background.png'),
-                    fit: keyboardH > 0 ? BoxFit.fitWidth : BoxFit.fill,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: ModalProgressHUD(
+          inAsyncCall: showLoading,
+          child: Container(
+            child: Column(
+              children: <Widget>[
+                AnimatedContainer(
+                  duration: Duration(seconds: 1),
+                  curve: Curves.fastOutSlowIn,
+                  height: keyboardH > 0 ? 400 - keyboardH : 300,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('images/background.png'),
+                      fit: keyboardH > 0 ? BoxFit.fitWidth : BoxFit.fill,
+                    ),
                   ),
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 30,
-                      width: 80,
-                      child: AnimatedContainer(
-                        height: keyboardH > 0 ? 350 - keyboardH : 200,
-                        duration: Duration(seconds: 1),
-                        curve: Curves.fastOutSlowIn,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                          image: AssetImage('images/light-1.png'),
-                        )),
-                      ),
-                    ),
-                    Positioned(
-                      left: 140,
-                      width: 80,
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 700),
-                        height: keyboardH > 0 ? 330 - keyboardH : 150,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                          image: AssetImage('images/light-2.png'),
-                        )),
-                      ),
-                    ),
-                    Positioned(
-                      right: 40,
-                      top: 30,
-                      child: Hero(
-                        tag: 'l',
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 30,
+                        width: 80,
                         child: AnimatedContainer(
-                          duration: Duration(milliseconds: 700),
                           height: keyboardH > 0 ? 350 - keyboardH : 200,
-                          width: 80,
+                          duration: Duration(seconds: 1),
+                          curve: Curves.fastOutSlowIn,
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                            image: AssetImage('images/clock.png'),
+                            image: AssetImage('images/light-1.png'),
                           )),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      child: Container(
-                        margin: EdgeInsets.only(top: keyboardH > 0 ? 20 : 50),
-                        child: Center(
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      Positioned(
+                        left: 140,
+                        width: 80,
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 700),
+                          height: keyboardH > 0 ? 330 - keyboardH : 150,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                            image: AssetImage('images/light-2.png'),
+                          )),
+                        ),
+                      ),
+                      Positioned(
+                        right: 40,
+                        top: 30,
+                        child: Hero(
+                          tag: 'l',
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 700),
+                            height: keyboardH > 0 ? 350 - keyboardH : 200,
+                            width: 80,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                              image: AssetImage('images/clock.png'),
+                            )),
                           ),
                         ),
                       ),
-                    )
-                  ],
+                      Positioned(
+                        child: Container(
+                          margin: EdgeInsets.only(top: keyboardH > 0 ? 20 : 50),
+                          child: Center(
+                            child: Text(
+                              "Login",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(30),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: kMainColor,
-                            blurRadius: 20.0,
-                            offset: Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.grey[100],
+                Visibility(
+                  visible: error,
+                  child: Center(
+                    child: Text(
+                      "We can't find you please recheck your details",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(bottom: 30, left: 30, right: 30, top: 15),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: kMainColor,
+                              blurRadius: 20.0,
+                              offset: Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Colors.grey[100],
+                                  ),
                                 ),
                               ),
-                            ),
-                            child: TextField(
-                              onChanged: (value) {
-                                email = value;
-                              },
-                              controller: _controller,
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: "Email address",
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey[400],
-                                  )),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(6.0),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.grey[100],
-                                ),
+                              child: TextField(
+                                onChanged: (value) {
+                                  email = value;
+                                },
+                                onTap: () {
+                                  setState(() {
+                                    error = false;
+                                  });
+                                },
+                                controller: _controller,
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: "Email address",
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey[400],
+                                    )),
                               ),
                             ),
-                            child: TextField(
-                              obscureText: obsecure,
-                              onChanged: (value) {
-                                password = value;
-                              },
-                              decoration: InputDecoration(
-                                  suffixIcon: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        obsecure = !obsecure;
-                                      });
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 0.0),
-                                      child: Icon(
-                                        Icons.remove_red_eye,
-                                        color:
-                                            obsecure ? Colors.grey : Colors.red,
+                            Container(
+                              padding: EdgeInsets.all(6.0),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Colors.grey[100],
+                                  ),
+                                ),
+                              ),
+                              child: TextField(
+                                obscureText: obsecure,
+                                onChanged: (value) {
+                                  password = value;
+                                },
+                                onTap: () {
+                                  setState(() {
+                                    error = false;
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                    suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          obsecure = !obsecure;
+                                        });
+                                      },
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 0.0),
+                                        child: Icon(
+                                          Icons.remove_red_eye,
+                                          color: obsecure
+                                              ? Colors.grey
+                                              : Colors.red,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  border: InputBorder.none,
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey[400],
-                                  )),
-                            ),
-                          )
-                        ],
+                                    border: InputBorder.none,
+                                    hintText: "Password",
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey[400],
+                                    )),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
-                      child: button(
-                        title: "Login",
-                        onPress: () async {
+                      Padding(
+                        padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
+                        child: button(
+                          title: "Login",
+                          onPress: () async {
+                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              showLoading = true;
+                            });
+
+                            try {
+                              if (email != null && password != null) {
+                                final user =
+                                    await _auth.signInWithEmailAndPassword(
+                                        email: email, password: password);
+
+                                if (user != null) {
+                                  Navigator.pushNamed(context, HomeScreen.id);
+                                  _controller.clear();
+                                }
+                              }
+
+                              setState(() {
+                                showLoading = false;
+                              });
+                            } catch (e) {
+                              print(e);
+                              setState(() {
+                                showLoading = false;
+                                error = true;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: TextButton(
+                          text: "Forgot password?",
+                          onPress: () {
+                            Navigator.pushNamed(
+                                context, ForgotPasswordScreen.id);
+                          },
+                        ),
+                      ),
+                      TextButton(
+                        text: "New User? Create account here",
+                        onPress: () {
+                          Navigator.pushNamed(context, RegistraionScreen.id);
+                        },
+                        textSize: 17.0,
+                        textWeight: FontWeight.bold,
+                      ),
+                      // with custom text
+                      SignInButton(
+                        Buttons.GoogleDark,
+                        text: "Sign in with Google",
+                        onPressed: () async {
                           setState(() {
                             showLoading = true;
                           });
-
-                          try {
-                            if (email != null && password != null) {
-                              final user =
-                                  await _auth.signInWithEmailAndPassword(
-                                      email: email, password: password);
-
-                              if (user != null) {
-                                Navigator.pushNamed(context, HomeScreen.id);
-                                _controller.clear();
-                              }
-                            }
-
+                          User user = await _testSignInWithGoogle();
+                          if (user != null) {
                             setState(() {
                               showLoading = false;
                             });
-                          } catch (e) {
-                            print(e);
-
-                            setState(() {
-                              showLoading = false;
-                            });
+                            Navigator.pushNamed(context, HomeScreen.id);
                           }
                         },
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: TextButton(
-                        text: "Forgot password?",
-                        onPress: () {
-                          Navigator.pushNamed(context, ForgotPasswordScreen.id);
-                        },
-                      ),
-                    ),
-                    TextButton(
-                      text: "New User? Create account here",
-                      onPress: () {
-                        Navigator.pushNamed(context, RegistraionScreen.id);
-                      },
-                      textSize: 17.0,
-                      textWeight: FontWeight.bold,
-                    ),
-                    // with custom text
-                    SignInButton(
-                      Buttons.GoogleDark,
-                      text: "Sign in with Google",
-                      onPressed: () async {
-                        User user = await _testSignInWithGoogle();
-                        if (user != null) {
-                          Navigator.pushNamed(context, HomeScreen.id);
-                        }
-                      },
-                    )
-                  ],
-                ),
-              )
-            ],
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

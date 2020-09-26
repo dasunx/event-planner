@@ -3,6 +3,7 @@ import 'package:event_planner/classes/Guest.dart';
 import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/functions/FirebaseHelper.dart';
 import 'package:event_planner/screens/guest/view_guests.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -127,12 +128,14 @@ class _AddGuestState extends State<AddGuest> {
                 padding: const EdgeInsets.all(8.0),
                 child: button(
                   onPress: () {
-                    event.guests.add(
-                        Guest(email, name, _radioValue, note, event.userId));
+                    FirebaseHelper fl = new FirebaseHelper();
 
-                    Navigator.pushNamed(context, ViewGuests.id,
-                        arguments: event);
-                    showToast("Guest added");
+                    Guest guest = Guest(email, name, _radioValue, note);
+                    event.guests.add(guest);
+                    fl.addGuest(event.id, guest, context);
+                    // Navigator.pushNamed(context, ViewGuests.id,
+                    //     arguments: event);
+                    // showToast("Guest added");
                   },
                   title: "Save",
                 ),

@@ -1,3 +1,4 @@
+import 'package:event_planner/components/AlertDialog.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/auth/forgotpassword_screen.dart';
@@ -14,17 +15,19 @@ class RegistraionScreen extends StatefulWidget {
 }
 
 class _RegistraionScreenState extends State<RegistraionScreen> {
+  TextEditingController tx = new TextEditingController();
   bool obsecure = true;
   final _auth = FirebaseAuth.instance;
   String userName;
   String email;
   String password;
   bool showLoading = false;
-
+  bool _validateEmail = false;
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double keyboardH = MediaQuery.of(context).viewInsets.bottom;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
@@ -153,12 +156,21 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                               ),
                             ),
                             child: TextField(
+                              controller: tx,
                               onChanged: (value) {
                                 email = value;
+                              },
+                              onTap: () {
+                                setState(() {
+                                  _validateEmail = false;
+                                });
                               },
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Email address",
+                                  errorText: _validateEmail
+                                      ? "Add different email"
+                                      : null,
                                   hintStyle: TextStyle(
                                     color: Colors.grey[400],
                                   )),
@@ -225,7 +237,25 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                             showLoading = false;
                           });
                         } catch (e) {
-                          print(e);
+                          print(e.code);
+                          if (e.code == 'email-already-in-use') {
+                            showAlertDialog(
+                                context,
+                                "Email already in use",
+                                "${e.message} You want to sign in?",
+                                "let's sign in", () {
+                              Navigator.of(context, rootNavigator: true).pop();
+                              Navigator.pushNamed(context, LoginScreen.id,
+                                  arguments: email);
+                              print("yes");
+                            }, () {
+                              setState(() {
+                                _validateEmail = true;
+                              });
+                              tx.clear();
+                              Navigator.of(context, rootNavigator: true).pop();
+                            });
+                          }
                           setState(() {
                             showLoading = false;
                           });
