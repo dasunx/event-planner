@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 const Color kMainColor = Color.fromRGBO(143, 148, 251, 1);
 const Color kMainColorOpacity = Color.fromRGBO(143, 148, 251, 0.7);
+const kSecondaryColor = Color(0xFF1ad1d1);
+const kSecondartColorOpacity = Color.fromRGBO(26, 209, 209, 0.7);
 
 const kTitleTextStyle = TextStyle(
   color: Colors.black,
@@ -25,4 +27,9 @@ const kTextFieldDecoration = InputDecoration(
     borderSide: BorderSide(color: kMainColor, width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(12.0)),
   ),
+);
+
+const kLabelTextStyle = TextStyle(
+  fontSize: 16,
+  color: Colors.white,
 );

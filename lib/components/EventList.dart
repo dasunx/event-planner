@@ -1,5 +1,6 @@
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/screens/guest/view_guests.dart';
 import 'package:event_planner/screens/todolist/view_todo.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +8,7 @@ import 'package:intl/intl.dart';
 Widget buildEventCard(BuildContext context, int index, List<Event> items,
     String routeId, FocusNode myFocusNode) {
   final event = items[index];
+
   return GestureDetector(
     onTap: () {
       myFocusNode.unfocus();
@@ -52,7 +54,7 @@ Widget buildEventCard(BuildContext context, int index, List<Event> items,
                       child: Icon(Icons.access_time),
                     ),
                     Text(
-                      "${DateFormat.y().format(event.startDate).toString()} ${DateFormat.MMMd().format(event.startDate).toString()} - ${DateFormat.MMMd().format(event.endDate).toString()}",
+                      "${DateFormat.yMMMd().format(event.startDate).toString()}",
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -64,10 +66,10 @@ Widget buildEventCard(BuildContext context, int index, List<Event> items,
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 6, right: 8.0, top: 4),
-                      child: Icon(Icons.attach_money),
+                      child: Icon(Icons.location_on),
                     ),
                     Text(
-                      event.budget.toString(),
+                      event.location,
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -90,7 +92,7 @@ Widget buildEventCard(BuildContext context, int index, List<Event> items,
               },
               blendMode: BlendMode.dstATop,
               child: Image.asset(
-                'images/event${event.userId}.jpg',
+                'images/event$index.jpg',
                 height: 150,
               ),
             ),

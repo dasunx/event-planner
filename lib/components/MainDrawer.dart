@@ -1,8 +1,10 @@
 import 'package:event_planner/classes/RouteArguments.dart';
+import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/event/add_event.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
 import 'package:event_planner/screens/shoppinglist/view_shoppinglsit.dart';
+import 'package:event_planner/screens/test.dart';
 import 'package:event_planner/screens/todolist/add_todo.dart';
 import 'package:event_planner/screens/event/choose_event_screen.dart';
 import 'package:event_planner/screens/home_screen.dart';
@@ -14,6 +16,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MainDrawer extends StatefulWidget {
+  final String id;
+
+  const MainDrawer({Key key, this.id}) : super(key: key);
   @override
   _MainDrawerState createState() => _MainDrawerState();
 }
@@ -22,6 +27,7 @@ User loggedInUser;
 
 class _MainDrawerState extends State<MainDrawer> {
   final _auth = FirebaseAuth.instance;
+
   void initState() {
     super.initState();
     getCurrentUser();
@@ -35,6 +41,17 @@ class _MainDrawerState extends State<MainDrawer> {
       }
     } catch (e) {
       print('error $e');
+    }
+  }
+
+  void makeRoutes(BuildContext context, RouteArguments arg, String changeId) {
+    Navigator.pop(context);
+    if (widget.id != changeId) {
+      if (widget.id == HomeScreen.id) {
+        Navigator.pushNamed(context, changeId, arguments: arg);
+      } else {
+        Navigator.popAndPushNamed(context, changeId, arguments: arg);
+      }
     }
   }
 
@@ -68,12 +85,18 @@ class _MainDrawerState extends State<MainDrawer> {
               ),
             ),
             currentAccountPicture: CircleAvatar(
+              backgroundImage: loggedInUser.photoURL != null
+                  ? NetworkImage(loggedInUser.photoURL)
+                  : null,
               backgroundColor: kMainColor,
-              child: Text(
-                "D",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 40.0,
+              child: Visibility(
+                visible: loggedInUser.photoURL == null,
+                child: Text(
+                  "D",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 40.0,
+                  ),
                 ),
               ),
             ),
@@ -88,51 +111,47 @@ class _MainDrawerState extends State<MainDrawer> {
           DrawerListTile(
             icon: Icons.home,
             onPress: () {
-              Navigator.pushNamed(context, HomeScreen.id);
+              makeRoutes(context, null, HomeScreen.id);
             },
             title: "Home",
           ),
           DrawerListTile(
             icon: Icons.event,
             onPress: () {
-              Navigator.pushNamed(context, AddEvent.id);
+              makeRoutes(context, null, AddEvent.id);
             },
             title: "Event",
           ),
           DrawerListTile(
             icon: Icons.person_add,
             onPress: () {
-              Navigator.pushNamed(
-                context,
-                ChooseEvent.id,
-                arguments: RouteArguments(
-                    routeScreen: AddGuest.id, subTitle: 'add guests'),
-              );
+              makeRoutes(
+                  context,
+                  RouteArguments(
+                      routeScreen: ViewGuests.id, subTitle: 'add guests'),
+                  ChooseEvent.id);
             },
-            title: "Add Guests",
+            title: "Guests",
           ),
           DrawerListTile(
             icon: Icons.done,
             onPress: () {
-              Navigator.pushNamed(
-                context,
-                ChooseEvent.id,
-                arguments:
-                    RouteArguments(routeScreen: ViewToDo.id, subTitle: 'To-Do'),
-              );
+              makeRoutes(
+                  context,
+                  RouteArguments(routeScreen: ViewToDo.id, subTitle: 'To-Do'),
+                  ChooseEvent.id);
             },
             title: "Add TO-DO",
           ),
           DrawerListTile(
             icon: Icons.shopping_cart,
             onPress: () {
-              Navigator.pushNamed(
-                context,
-                ChooseEvent.id,
-                arguments: RouteArguments(
-                    routeScreen: ViewShoppingList.id,
-                    subTitle: 'Shopping List'),
-              );
+              makeRoutes(
+                  context,
+                  RouteArguments(
+                      routeScreen: ViewShoppingList.id,
+                      subTitle: 'Shopping List'),
+                  ChooseEvent.id);
             },
             title: "Shopping List",
           ),
@@ -149,26 +168,16 @@ class _MainDrawerState extends State<MainDrawer> {
           ),
           DrawerListTile(
             icon: Icons.dashboard,
-            onPress: () {},
-            title: "Dashboard",
-          ),
-          DrawerListTile(
-            icon: Icons.person_add,
             onPress: () {
-              Navigator.pushNamed(
-                context,
-                ChooseEvent.id,
-                arguments: RouteArguments(
-                    routeScreen: ViewGuests.id, subTitle: 'View guests'),
-              );
+              showToast("No Dashboard yet");
             },
-            title: "View Guests",
+            title: "Dashboard",
           ),
           DrawerListTile(
             icon: Icons.monetization_on,
             onPress: () {
               _auth.signOut();
-              Navigator.popAndPushNamed(context, LoginScreen.id);
+              Navigator.pushReplacementNamed(context, LoginScreen.id);
             },
             title: "Sign out",
           ),

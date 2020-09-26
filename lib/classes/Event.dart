@@ -5,6 +5,7 @@ import 'package:event_planner/classes/ShoppingList.dart';
 import 'package:event_planner/classes/ToDoList.dart';
 
 class Event {
+  String id;
   final String title;
   final String location;
   final DateTime startDate;
@@ -19,6 +20,10 @@ class Event {
 
   set guestsList(Guest guest) {
     guests.add(guest);
+  }
+
+  set eventId(String id) {
+    this.id = id;
   }
 
   set addToShoppingList(ShoppingList item) {

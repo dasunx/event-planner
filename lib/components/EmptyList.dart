@@ -35,7 +35,8 @@ class EmptyList extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("images/noguest.png"),
+                  image:
+                      AssetImage(image != null ? image : "images/noguest.png"),
                 ),
               ),
             ),
