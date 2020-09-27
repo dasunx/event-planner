@@ -18,6 +18,7 @@ import 'package:event_planner/screens/guest/view_guests.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -36,8 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
   var eventList = List<Event>();
   var items = List<Event>();
   var i = 0;
+  bool loading = false;
 
   void getData() async {
+    loading = true;
     _firestore
         .collection('events')
         .where('userId', isEqualTo: loggedInUser.uid)
@@ -80,6 +83,14 @@ class _HomeScreenState extends State<HomeScreen> {
         eventList.add(ev);
       });
       items.clear();
+      print(eventList.length);
+      setState(() {
+        loading = false;
+        if (eventList.length <= 0) {
+          conditionx = true;
+        }
+      });
+
       items.addAll(eventList);
       items.sort((a, b) => a.startDate.compareTo(b.startDate));
     });
@@ -138,9 +149,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      conditionx = eventList.length >= 0 ? true : false;
-    });
     return GestureDetector(
       onTap: () {
         myFocusNode.unfocus();
@@ -152,87 +160,96 @@ class _HomeScreenState extends State<HomeScreen> {
             'Event Planner',
           ),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Visibility(
-              visible: conditionx,
-              child: Expanded(
-                flex: 2,
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Search Event",
-                          style: kTitleTextStyle,
+        body: ModalProgressHUD(
+          inAsyncCall: loading,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Visibility(
+                visible: !conditionx,
+                child: Expanded(
+                  flex: 2,
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Search Event",
+                            style: kTitleTextStyle,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 5, left: 40, right: 40),
-                        child: buildSearch(myFocusNode, "Search an event",
-                            (value) {
-                          filterSearchResults(value);
-                        }, myCon),
-                      )
-                    ],
+                        Padding(
+                          padding: EdgeInsets.only(top: 5, left: 40, right: 40),
+                          child: buildSearch(myFocusNode, "Search an event",
+                              (value) {
+                            filterSearchResults(value);
+                          }, myCon),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              flex: 8,
-              child: StreamBuilder<QuerySnapshot>(
-                stream: _firestore
-                    .collection('events')
-                    .where('userId', isEqualTo: loggedInUser.uid)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  List<Text> titles = [];
+              Expanded(
+                flex: 8,
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: _firestore
+                      .collection('events')
+                      .where('userId', isEqualTo: loggedInUser.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    List<Text> titles = [];
 
-                  if (!snapshot.hasData || snapshot.data.docs.length <= 0) {
+                    if (!snapshot.hasData || snapshot.data.docs.length <= 0) {
+                      if (loading) {
+                        return Center(
+                          child: Text("Loading"),
+                        );
+                      }
+                      return Column(
+                        children: [
+                          EmptyList(
+                            title: "No Events yet!",
+                            image: "images/noevent.png",
+                            onPress: () {
+                              Navigator.popAndPushNamed(context, AddEvent.id);
+                            },
+                            buttonText: "Add Event",
+                          ),
+                        ],
+                      );
+                    }
+
+                    FocusNode myFocusNode = new FocusNode();
+
                     return Column(
                       children: [
-                        EmptyList(
-                          title: "No Events yet!",
-                          image: "images/noevent.png",
-                          onPress: () {
-                            Navigator.popAndPushNamed(context, AddEvent.id);
-                          },
-                          buttonText: "Add Event",
+                        Expanded(
+                          flex: 8,
+                          child: Container(
+                            child: new ListView.builder(
+                                itemCount: items.length,
+                                itemBuilder:
+                                    (BuildContext context, int index) =>
+                                        buildEventCard(context, index, items,
+                                            ViewEvent.id, myFocusNode)),
+                          ),
                         ),
                       ],
                     );
-                  }
-
-                  FocusNode myFocusNode = new FocusNode();
-
-                  return Column(
-                    children: [
-                      Expanded(
-                        flex: 8,
-                        child: Container(
-                          child: new ListView.builder(
-                              itemCount: items.length,
-                              itemBuilder: (BuildContext context, int index) =>
-                                  buildEventCard(context, index, items,
-                                      ViewEvent.id, myFocusNode)),
-                        ),
-                      ),
-                    ],
-                  );
-                },
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         drawer: MainDrawer(
           id: HomeScreen.id,
         ),
         floatingActionButton: Visibility(
-          visible: conditionx,
+          visible: !conditionx,
           child: FloatingActionButton(
             onPressed: () {
               Navigator.pushNamed(context, AddEvent.id);

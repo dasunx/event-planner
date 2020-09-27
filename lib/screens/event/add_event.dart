@@ -104,7 +104,7 @@ class _AddEventState extends State<AddEvent> {
                       ),
                       new RaisedButton(
                         padding: EdgeInsets.only(
-                            left: 12, right: 60, top: 5, bottom: 5),
+                            left: 12, right: 170, top: 5, bottom: 5),
                         shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(12.0),
                           side: BorderSide(color: kMainColor),

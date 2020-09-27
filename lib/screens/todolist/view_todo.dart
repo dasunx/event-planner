@@ -73,7 +73,7 @@ class _ViewToDoState extends State<ViewToDo> {
       if (event.todoList != null) {
         toDoLists = event.todoList;
         toDoItems.addAll(toDoLists);
-        if (event.guests.length > 0) {
+        if (event.todoList.length > 0) {
           conditionx = true;
         }
       }

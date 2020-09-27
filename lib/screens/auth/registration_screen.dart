@@ -245,7 +245,8 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                                 "${e.message} You want to sign in?",
                                 "let's sign in", () {
                               Navigator.of(context, rootNavigator: true).pop();
-                              Navigator.pushNamed(context, LoginScreen.id,
+                              Navigator.pushReplacementNamed(
+                                  context, LoginScreen.id,
                                   arguments: email);
                               print("yes");
                             }, () {
