@@ -277,7 +277,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         email: email, password: password);
 
                                 if (user != null) {
-                                  Navigator.pushNamed(context, HomeScreen.id);
+                                  Navigator.pushReplacementNamed(
+                                      context, HomeScreen.id);
                                   _controller.clear();
                                 }
                               }
