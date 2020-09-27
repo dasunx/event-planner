@@ -18,6 +18,7 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
   TextEditingController tx = new TextEditingController();
   bool obsecure = true;
   final _auth = FirebaseAuth.instance;
+
   String userName;
   String email;
   String password;
@@ -168,9 +169,8 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Email address",
-                                  errorText: _validateEmail
-                                      ? "Add different email"
-                                      : null,
+                                  errorText:
+                                      _validateEmail ? "Add valid email" : null,
                                   hintStyle: TextStyle(
                                     color: Colors.grey[400],
                                   )),
@@ -219,48 +219,57 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                     button(
                       title: "Register",
                       onPress: () async {
-                        setState(() {
-                          showLoading = true;
-                        });
-                        try {
-                          final newUser =
-                              await _auth.createUserWithEmailAndPassword(
-                                  email: email, password: password);
-                          if (newUser != null) {
-                            final user = _auth.currentUser;
-                            user.updateProfile(displayName: userName);
-
-                            Navigator.pushNamed(context, HomeScreen.id);
-                          }
-
+                        if (email != null &&
+                            RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(email)) {
                           setState(() {
-                            showLoading = false;
+                            showLoading = true;
                           });
-                        } catch (e) {
-                          print(e.code);
-                          if (e.code == 'email-already-in-use') {
-                            showAlertDialog(
-                                context,
-                                "Email already in use",
-                                "${e.message} You want to sign in?",
-                                "let's sign in", () {
-                              Navigator.of(context, rootNavigator: true).pop();
-                              Navigator.pushReplacementNamed(
-                                  context, LoginScreen.id,
-                                  arguments: email);
-                              print("yes");
-                            }, () {
-                              setState(() {
-                                _validateEmail = true;
+                          try {
+                            final newUser =
+                                await _auth.createUserWithEmailAndPassword(
+                                    email: email, password: password);
+                            if (newUser != null) {
+                              final user = _auth.currentUser;
+                              user.updateProfile(displayName: userName);
+
+                              Navigator.pushNamed(context, HomeScreen.id);
+                            }
+
+                            setState(() {
+                              showLoading = false;
+                            });
+                          } catch (e) {
+                            print(e.code);
+                            if (e.code == 'email-already-in-use') {
+                              showAlertDialog(
+                                  context,
+                                  "Email already in use",
+                                  "${e.message} You want to sign in?",
+                                  "let's sign in", () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                                Navigator.pushReplacementNamed(
+                                    context, LoginScreen.id,
+                                    arguments: email);
+                                print("yes");
+                              }, () {
+                                setState(() {
+                                  _validateEmail = true;
+                                });
+                                tx.clear();
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
                               });
-                              tx.clear();
-                              Navigator.of(context, rootNavigator: true).pop();
+                            }
+                            setState(() {
+                              showLoading = false;
                             });
                           }
-                          setState(() {
-                            showLoading = false;
-                          });
-                        }
+                        } else {}
+                        setState(() {
+                          _validateEmail = true;
+                        });
                       },
                     ),
                     SizedBox(
