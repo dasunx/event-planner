@@ -3,6 +3,7 @@ import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/event/add_event.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
+import 'package:event_planner/screens/onboard/onboard_screen.dart';
 import 'package:event_planner/screens/shoppinglist/view_shoppinglsit.dart';
 import 'package:event_planner/screens/test.dart';
 import 'package:event_planner/screens/todolist/add_todo.dart';
@@ -169,7 +170,7 @@ class _MainDrawerState extends State<MainDrawer> {
           DrawerListTile(
             icon: Icons.dashboard,
             onPress: () {
-              showToast("No Dashboard yet");
+              Navigator.pushNamed(context, OnBoardScreen.id);
             },
             title: "Dashboard",
           ),

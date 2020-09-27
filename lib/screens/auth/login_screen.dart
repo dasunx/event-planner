@@ -27,7 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool obsecure = true;
   final _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-
+  bool _emailValidator = false;
+  String emailError;
   String email;
   String password;
   bool showLoading = false;
@@ -208,6 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: "Email address",
+                                    errorText:
+                                        _emailValidator ? emailError : null,
                                     hintStyle: TextStyle(
                                       color: Colors.grey[400],
                                     )),
@@ -269,28 +272,36 @@ class _LoginScreenState extends State<LoginScreen> {
                             setState(() {
                               showLoading = true;
                             });
+                            if (RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(email)) {
+                              try {
+                                if (email != null && password != null) {
+                                  final user =
+                                      await _auth.signInWithEmailAndPassword(
+                                          email: email, password: password);
 
-                            try {
-                              if (email != null && password != null) {
-                                final user =
-                                    await _auth.signInWithEmailAndPassword(
-                                        email: email, password: password);
-
-                                if (user != null) {
-                                  Navigator.pushReplacementNamed(
-                                      context, HomeScreen.id);
-                                  _controller.clear();
+                                  if (user != null) {
+                                    Navigator.pushReplacementNamed(
+                                        context, HomeScreen.id);
+                                    _controller.clear();
+                                  }
                                 }
-                              }
 
+                                setState(() {
+                                  showLoading = false;
+                                });
+                              } catch (e) {
+                                print(e);
+                                setState(() {
+                                  showLoading = false;
+                                  error = true;
+                                });
+                              }
+                            } else {
                               setState(() {
-                                showLoading = false;
-                              });
-                            } catch (e) {
-                              print(e);
-                              setState(() {
-                                showLoading = false;
-                                error = true;
+                                emailError = "Please enter an valid email";
+                                _emailValidator = true;
                               });
                             }
                           },

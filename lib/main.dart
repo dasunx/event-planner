@@ -1,6 +1,7 @@
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/event/add_event.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
+import 'package:event_planner/screens/onboard/onboard_screen.dart';
 import 'package:event_planner/screens/shoppinglist/add_shoppinglist.dart';
 import 'package:event_planner/screens/shoppinglist/view_shoppinglsit.dart';
 import 'package:event_planner/screens/test.dart';
@@ -51,7 +52,8 @@ class MyApp extends StatelessWidget {
         ViewToDo.id: (context) => ViewToDo(),
         AddShoppingList.id: (context) => AddShoppingList(),
         ViewShoppingList.id: (context) => ViewShoppingList(),
-        Test.id: (context) => Test()
+        Test.id: (context) => Test(),
+        OnBoardScreen.id: (context) => OnBoardScreen()
       },
     );
   }
