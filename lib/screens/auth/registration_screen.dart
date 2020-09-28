@@ -246,7 +246,8 @@ class _RegistraionScreenState extends State<RegistraionScreen> {
                                   context,
                                   "Email already in use",
                                   "${e.message} You want to sign in?",
-                                  "let's sign in", () {
+                                  "let's sign in",
+                                  "cancel", () {
                                 Navigator.of(context, rootNavigator: true)
                                     .pop();
                                 Navigator.pushReplacementNamed(

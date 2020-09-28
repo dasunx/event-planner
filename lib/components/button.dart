@@ -5,8 +5,14 @@ import '../constants.dart';
 class button extends StatelessWidget {
   final Function onPress;
   final String title;
+  final Color color;
+  final Color secondaryColor;
 
-  const button({@required this.onPress, @required this.title});
+  const button(
+      {@required this.onPress,
+      @required this.title,
+      this.color,
+      this.secondaryColor});
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +24,8 @@ class button extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           gradient: LinearGradient(
             colors: [
-              kMainColor,
-              kMainColorOpacity,
+              color != null ? color : kMainColor,
+              secondaryColor != null ? secondaryColor : kMainColorOpacity,
             ],
           ),
         ),

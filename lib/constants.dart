@@ -33,3 +33,10 @@ const kLabelTextStyle = TextStyle(
   fontSize: 16,
   color: Colors.white,
 );
+
+const kHeaderTextStyle = TextStyle(
+  fontSize: 35,
+  fontFamily: 'NotoSans',
+  color: Colors.white,
+  fontWeight: FontWeight.bold,
+);

@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:event_planner/classes/Budget.dart';
 import 'package:event_planner/classes/Guest.dart';
 import 'package:event_planner/classes/ShoppingList.dart';
 import 'package:event_planner/classes/ToDoList.dart';
@@ -10,7 +11,7 @@ class Event {
   final String location;
   final DateTime startDate;
   final DateTime endDate;
-  final double budget;
+  Budget budget;
   final String userId;
   List<Guest> guests;
   List<ShoppingList> shoppingList;
