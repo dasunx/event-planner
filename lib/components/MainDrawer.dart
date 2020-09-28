@@ -1,6 +1,7 @@
 import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/screens/dashboard/dashboard.dart';
 import 'package:event_planner/screens/event/add_event.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
 import 'package:event_planner/screens/onboard/onboard_screen.dart';
@@ -160,6 +161,17 @@ class _MainDrawerState extends State<MainDrawer> {
             icon: Icons.monetization_on,
             onPress: () {},
             title: "Add budget",
+          ),
+          DrawerListTile(
+            icon: Icons.equalizer,
+            onPress: () {
+              makeRoutes(
+                  context,
+                  RouteArguments(
+                      routeScreen: Dashboard.id, subTitle: 'Dashboard'),
+                  ChooseEvent.id);
+            },
+            title: "Dashboard",
           ),
           SizedBox(
             height: 30.0,

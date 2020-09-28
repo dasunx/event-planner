@@ -1,4 +1,5 @@
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/screens/dashboard/dashboard.dart';
 import 'package:event_planner/screens/event/add_event.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
 import 'package:event_planner/screens/onboard/onboard_screen.dart';
@@ -53,7 +54,8 @@ class MyApp extends StatelessWidget {
         AddShoppingList.id: (context) => AddShoppingList(),
         ViewShoppingList.id: (context) => ViewShoppingList(),
         Test.id: (context) => Test(),
-        OnBoardScreen.id: (context) => OnBoardScreen()
+        OnBoardScreen.id: (context) => OnBoardScreen(),
+        Dashboard.id: (context) => Dashboard()
       },
     );
   }
