@@ -1,10 +1,10 @@
 import 'package:event_planner/classes/Event.dart';
 
 class Guest {
-  final String email;
-  final String name;
-  final bool gender;
-  final String note;
+  String email;
+  String name;
+  bool gender;
+  String note;
 
   Guest(this.email, this.name, this.gender, this.note);
 

@@ -1,18 +1,19 @@
 import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/screens/budget/add_budget_screen.dart';
+import 'package:event_planner/screens/budget/view_budget.dart';
 import 'package:event_planner/screens/event/add_event.dart';
-import 'package:event_planner/screens/guest/add_guest.dart';
-import 'package:event_planner/screens/onboard/onboard_screen.dart';
+
+import 'package:event_planner/screens/other/contactus.dart';
 import 'package:event_planner/screens/shoppinglist/view_shoppinglsit.dart';
-import 'package:event_planner/screens/test.dart';
-import 'package:event_planner/screens/todolist/add_todo.dart';
+
 import 'package:event_planner/screens/event/choose_event_screen.dart';
 import 'package:event_planner/screens/home_screen.dart';
 import 'package:event_planner/screens/auth/login_screen.dart';
 import 'package:event_planner/screens/guest/view_guests.dart';
 import 'package:event_planner/screens/todolist/view_todo.dart';
-import 'package:event_planner/screens/welcome_screen.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -158,8 +159,14 @@ class _MainDrawerState extends State<MainDrawer> {
           ),
           DrawerListTile(
             icon: Icons.monetization_on,
-            onPress: () {},
-            title: "Add budget",
+            onPress: () {
+              makeRoutes(
+                  context,
+                  RouteArguments(
+                      routeScreen: ViewBudget.id, subTitle: 'View Budget'),
+                  ChooseEvent.id);
+            },
+            title: "Budget",
           ),
           SizedBox(
             height: 30.0,
@@ -170,12 +177,19 @@ class _MainDrawerState extends State<MainDrawer> {
           DrawerListTile(
             icon: Icons.dashboard,
             onPress: () {
-              Navigator.pushNamed(context, OnBoardScreen.id);
+              showToast("Dashboard under development");
             },
             title: "Dashboard",
           ),
           DrawerListTile(
-            icon: Icons.monetization_on,
+            icon: Icons.phone,
+            onPress: () {
+              Navigator.pushNamed(context, ContactUs.id);
+            },
+            title: "Contact us",
+          ),
+          DrawerListTile(
+            icon: Icons.exit_to_app,
             onPress: () {
               _auth.signOut();
               Navigator.pushReplacementNamed(context, LoginScreen.id);

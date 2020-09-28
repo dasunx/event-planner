@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:event_planner/classes/Budget.dart';
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/classes/Guest.dart';
 import 'package:event_planner/classes/ShoppingList.dart';
@@ -21,6 +22,18 @@ class FirebaseHelper {
         );
       }
     });
+  }
+
+  void updateGuests(List<Guest> guests, String id) {
+    List objs = new List();
+    guests.forEach((element) {
+      objs.add(element.toJson());
+    });
+    _instance.runTransaction((transaction) async {
+      var res =
+          await _instance.collection('events').doc(id).update({'guests': objs});
+    });
+    showToast("Guest updated");
   }
 
   void addGuest(String id, Guest guest, BuildContext context) {
@@ -53,6 +66,16 @@ class FirebaseHelper {
           .doc(id)
           .update({'shoppingList': FieldValue.arrayUnion(obj)});
       showToast("Shopping item added");
+    });
+  }
+
+  void addBudget(String id, Budget budget) {
+    _instance.runTransaction((transaction) async {
+      var res = await _instance
+          .collection('events')
+          .doc(id)
+          .update({'budget': budget.toJson()});
+      showToast("Budget added");
     });
   }
 }

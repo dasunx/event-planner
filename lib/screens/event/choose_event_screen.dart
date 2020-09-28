@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:event_planner/classes/Budget.dart';
 import 'package:event_planner/classes/Event.dart';
 
 import 'package:event_planner/classes/Guest.dart';
@@ -59,14 +60,21 @@ class _ChooseEventState extends State<ChooseEvent> {
           ShoppingList sList = new ShoppingList(
               e['name'], e['qty'], e['price'], e['details'], e['purchased']);
           shoppingList.add(sList);
-          print(sList);
         });
+        Map<String, dynamic> budgetElement = element.data()['budget'];
+        Budget tempBudget;
+        if (budgetElement != null) {
+          tempBudget = new Budget(budgetElement['budget'],
+              budgetElement['paidAmount'], budgetElement['note']);
+        }
+        print(budgetElement);
+
         Event ev = new Event(
             element.data()['title'],
             element.data()['location'],
             element.data()['startDate'].toDate(),
             DateTime(2020, 11, 02),
-            20330,
+            tempBudget,
             loggedInUser.uid,
             guests,
             shoppingList,
@@ -76,9 +84,11 @@ class _ChooseEventState extends State<ChooseEvent> {
 
         eventList.add(ev);
       });
-      items.clear();
-      items.addAll(eventList);
-      items.sort((a, b) => a.startDate.compareTo(b.startDate));
+      if (mounted) {
+        items.clear();
+        items.addAll(eventList);
+        items.sort((a, b) => a.startDate.compareTo(b.startDate));
+      }
     });
   }
 
