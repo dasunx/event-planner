@@ -2,6 +2,7 @@ import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/components/IconContent.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/screens/budget/view_budget.dart';
 import 'package:event_planner/screens/guest/view_guests.dart';
 import 'package:event_planner/screens/shoppinglist/view_shoppinglsit.dart';
 import 'package:event_planner/screens/todolist/add_todo.dart';
@@ -128,6 +129,10 @@ class _ViewEventState extends State<ViewEvent> {
                       Expanded(
                         flex: 2,
                         child: IconContent(
+                          onPress: () {
+                            Navigator.pushNamed(context, ViewBudget.id,
+                                arguments: event);
+                          },
                           icon: Icons.attach_money,
                           label: "Budget",
                           color: Colors.white,

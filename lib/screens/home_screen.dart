@@ -69,9 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
         });
         Map<String, dynamic> budgetElement = element.data()['budget'];
         Budget tempBudget;
-        if (budgetElement != null) {
-          tempBudget = new Budget(budgetElement['budget'],
-              budgetElement['paidAmount'], budgetElement['note']);
+        if (budgetElement != null && budgetElement['budget'] != null) {
+          tempBudget = new Budget(
+              double.parse(budgetElement['budget'].toString()),
+              budgetElement['paidAmount'],
+              budgetElement['note']);
         }
 
         Event ev = new Event(

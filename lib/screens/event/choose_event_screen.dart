@@ -64,10 +64,13 @@ class _ChooseEventState extends State<ChooseEvent> {
         Map<String, dynamic> budgetElement = element.data()['budget'];
         Budget tempBudget;
         if (budgetElement != null) {
-          tempBudget = new Budget(budgetElement['budget'],
-              budgetElement['paidAmount'], budgetElement['note']);
+          if (budgetElement['budget'] != null) {
+            tempBudget = new Budget(
+                double.parse(budgetElement['budget'].toString()),
+                budgetElement['paidAmount'],
+                budgetElement['note']);
+          }
         }
-        print(budgetElement);
 
         Event ev = new Event(
             element.data()['title'],
@@ -149,92 +152,97 @@ class _ChooseEventState extends State<ChooseEvent> {
     setState(() {
       conditionx = eventList.length >= 0 ? true : false;
     });
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          args.subTitle,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomPadding: false,
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(
+            args.subTitle,
+          ),
         ),
-      ),
-      drawer: MainDrawer(
-        id: args.routeScreen,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Visibility(
-            visible: conditionx,
-            child: Expanded(
-              flex: 2,
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Search Event",
-                        style: kTitleTextStyle,
+        drawer: MainDrawer(
+          id: args.routeScreen,
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Visibility(
+              visible: conditionx,
+              child: Expanded(
+                flex: 2,
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Search Event",
+                          style: kTitleTextStyle,
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 5, left: 40, right: 40),
-                      child:
-                          buildSearch(myFocusNode, "Search an event", (value) {
-                        filterSearchResults(value);
-                      }, myCon),
-                    )
-                  ],
+                      Padding(
+                        padding: EdgeInsets.only(top: 5, left: 40, right: 40),
+                        child: buildSearch(myFocusNode, "Search an event",
+                            (value) {
+                          filterSearchResults(value);
+                        }, myCon),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            flex: 8,
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _firestore
-                  .collection('events')
-                  .where('userId', isEqualTo: loggedInUser.uid)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                List<Text> titles = [];
+            Expanded(
+              flex: 8,
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _firestore
+                    .collection('events')
+                    .where('userId', isEqualTo: loggedInUser.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  List<Text> titles = [];
 
-                if (!snapshot.hasData || snapshot.data.docs.length <= 0) {
+                  if (!snapshot.hasData || snapshot.data.docs.length <= 0) {
+                    return Column(
+                      children: [
+                        EmptyList(
+                          title: "No Events yet!",
+                          image: "images/noevent.png",
+                          onPress: () {
+                            Navigator.popAndPushNamed(context, AddEvent.id);
+                          },
+                          buttonText: "Add Event",
+                        ),
+                      ],
+                    );
+                  }
+
+                  FocusNode myFocusNode = new FocusNode();
+
                   return Column(
                     children: [
-                      EmptyList(
-                        title: "No Events yet!",
-                        image: "images/noevent.png",
-                        onPress: () {
-                          Navigator.popAndPushNamed(context, AddEvent.id);
-                        },
-                        buttonText: "Add Event",
+                      Expanded(
+                        flex: 8,
+                        child: Container(
+                          child: new ListView.builder(
+                              itemCount: items.length,
+                              itemBuilder: (BuildContext context, int index) =>
+                                  buildEventCard(context, index, items,
+                                      args.routeScreen, myFocusNode)),
+                        ),
                       ),
                     ],
                   );
-                }
-
-                FocusNode myFocusNode = new FocusNode();
-
-                return Column(
-                  children: [
-                    Expanded(
-                      flex: 8,
-                      child: Container(
-                        child: new ListView.builder(
-                            itemCount: items.length,
-                            itemBuilder: (BuildContext context, int index) =>
-                                buildEventCard(context, index, items,
-                                    args.routeScreen, myFocusNode)),
-                      ),
-                    ),
-                  ],
-                );
-              },
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
