@@ -9,3 +9,10 @@ class RouteArguments {
   RouteArguments(
       {this.widget, this.buttonName, this.subTitle, this.routeScreen});
 }
+
+class UpdateGuestArguments {
+  final int index;
+  final Event event;
+
+  UpdateGuestArguments(this.index, this.event);
+}

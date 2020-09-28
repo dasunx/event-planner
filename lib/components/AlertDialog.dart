@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 
-showAlertDialog(BuildContext context, String title, String message,
-    String buttonText, Function onSubmit, Function onClose) {
+showAlertDialog(
+    BuildContext context,
+    String title,
+    String message,
+    String submitButtonText,
+    String cancelButtonText,
+    Function onSubmit,
+    Function onClose) {
   // set up the buttons
   Widget cancelButton = FlatButton(
-    child: Text("Cancel"),
+    child: Text(cancelButtonText),
     onPressed: onClose,
   );
   Widget continueButton = FlatButton(
-    child: Text(buttonText),
+    child: Text(submitButtonText),
     onPressed: onSubmit,
   );
 

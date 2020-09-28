@@ -1,5 +1,6 @@
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/classes/Guest.dart';
+import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/components/AlertDialog.dart';
 import 'package:event_planner/components/EmptyList.dart';
 import 'package:event_planner/components/SearchBar.dart';
@@ -7,6 +8,7 @@ import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
+import 'package:event_planner/screens/guest/update_guest.dart';
 import 'package:flutter/material.dart';
 
 class ViewGuests extends StatefulWidget {
@@ -85,7 +87,7 @@ class _ViewGuestsState extends State<ViewGuests> {
         visible: conditionx,
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.popAndPushNamed(context, AddGuest.id, arguments: event);
+            Navigator.pushNamed(context, AddGuest.id, arguments: event);
           },
           backgroundColor: kMainColor,
           elevation: 10,
@@ -253,7 +255,9 @@ class _ViewGuestsState extends State<ViewGuests> {
                           flex: 1,
                           child: IconButton(
                             onPressed: () {
-                              print("edit");
+                              Navigator.pushNamed(context, UpdateGuest.id,
+                                  arguments:
+                                      UpdateGuestArguments(index, event));
                             },
                             icon: Icon(Icons.edit),
                           ),
@@ -266,7 +270,8 @@ class _ViewGuestsState extends State<ViewGuests> {
                                   context,
                                   "Delete guest",
                                   "Are you sure, do you need to delete this guest?",
-                                  "Delete", () {
+                                  "Delete",
+                                  "No", () {
                                 deleteGuest(index);
                                 Navigator.of(context, rootNavigator: true)
                                     .pop();

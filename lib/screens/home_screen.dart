@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:event_planner/classes/Budget.dart';
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/classes/Guest.dart';
 import 'package:event_planner/classes/ShoppingList.dart';
@@ -65,31 +66,39 @@ class _HomeScreenState extends State<HomeScreen> {
           ShoppingList sList = new ShoppingList(
               e['name'], e['qty'], e['price'], e['details'], e['purchased']);
           shoppingList.add(sList);
-          print(sList);
         });
+        Map<String, dynamic> budgetElement = element.data()['budget'];
+        Budget tempBudget;
+        if (budgetElement != null && budgetElement['budget'] != null) {
+          tempBudget = new Budget(
+              double.parse(budgetElement['budget'].toString()),
+              budgetElement['paidAmount'],
+              budgetElement['note']);
+        }
+
         Event ev = new Event(
             element.data()['title'],
             element.data()['location'],
             element.data()['startDate'].toDate(),
             DateTime(2020, 11, 02),
-            20330,
+            tempBudget,
             loggedInUser.uid,
             guests,
             shoppingList,
             todos);
-
         ev.id = element.id;
 
         eventList.add(ev);
       });
       items.clear();
-      print(eventList.length);
-      setState(() {
-        loading = false;
-        if (eventList.length <= 0) {
-          conditionx = true;
-        }
-      });
+      if (mounted) {
+        setState(() {
+          loading = false;
+          if (eventList.length <= 0) {
+            conditionx = true;
+          }
+        });
+      }
 
       items.addAll(eventList);
       items.sort((a, b) => a.startDate.compareTo(b.startDate));
@@ -110,6 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     myFocusNode.dispose();
+    _HomeScreenState();
     super.dispose();
   }
 
@@ -134,16 +144,21 @@ class _HomeScreenState extends State<HomeScreen> {
           dummyList.add(item);
         }
       });
-      setState(() {
-        items.clear();
-        items.addAll(dummyList);
-      });
+      if (mounted) {
+        setState(() {
+          items.clear();
+          items.addAll(dummyList);
+        });
+      }
+
       return;
     } else {
-      setState(() {
-        items.clear();
-        items.addAll(eventList);
-      });
+      if (mounted) {
+        setState(() {
+          items.clear();
+          items.addAll(eventList);
+        });
+      }
     }
   }
 

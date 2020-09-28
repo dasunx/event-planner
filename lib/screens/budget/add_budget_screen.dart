@@ -1,52 +1,36 @@
+import 'package:event_planner/classes/Budget.dart';
 import 'package:event_planner/classes/Event.dart';
-import 'package:event_planner/classes/Guest.dart';
-import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/functions/FirebaseHelper.dart';
+import 'package:event_planner/screens/budget/view_budget.dart';
 import 'package:event_planner/screens/guest/view_guests.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-class AddGuest extends StatefulWidget {
-  static const String id = 'add_guest';
+class AddBudget extends StatefulWidget {
+  static const String id = 'add_budget';
   @override
-  _AddGuestState createState() => _AddGuestState();
+  _AddBudgetState createState() => _AddBudgetState();
 }
 
-class _AddGuestState extends State<AddGuest> {
+class _AddBudgetState extends State<AddBudget> {
   Event event;
-  FocusNode myFocusNode;
-  @override
-  bool _radioValue = true;
-  String email;
-  String name;
-  String note;
-
+  FirebaseHelper fl = new FirebaseHelper();
+  double budget;
+  String notes;
+  double paidAmount;
   @override
   void initState() {
-    myFocusNode = FocusNode();
     super.initState();
   }
 
-  void _handleRadioInput(bool value) {
-    setState(() {
-      _radioValue = value;
-    });
-  }
-
   @override
-  void dispose() {
-    myFocusNode.dispose();
-    super.dispose();
-  }
-
   Widget build(BuildContext context) {
     event = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '${event.title}',
+          "Add Budget",
         ),
       ),
       body: Container(
@@ -62,7 +46,7 @@ class _AddGuestState extends State<AddGuest> {
                 padding: const EdgeInsets.all(18.0),
                 child: Center(
                   child: Text(
-                    "Add Guest",
+                    "Add Budget of ${event.title}",
                     style: kTitleTextStyle,
                     textAlign: TextAlign.center,
                   ),
@@ -73,47 +57,30 @@ class _AddGuestState extends State<AddGuest> {
                 child: Column(
                   children: [
                     TextField(
+                      keyboardType: TextInputType.number,
                       onChanged: (value) {
-                        email = value;
+                        budget = double.parse(value);
                       },
                       decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Guest email", labelText: 'Email'),
+                          hintText: "Total budget", labelText: 'Budget'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        paidAmount = double.parse(value);
+                      },
+                      decoration: kTextFieldDecoration.copyWith(
+                          hintText: "Paid amount", labelText: 'Paid amount'),
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     TextField(
                       onChanged: (value) {
-                        name = value;
-                      },
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Guest Name", labelText: 'Name'),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Radio(
-                          value: true,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioInput,
-                        ),
-                        Text('Male'),
-                        Radio(
-                          value: false,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioInput,
-                        ),
-                        Text('Female'),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      onChanged: (value) {
-                        note = value;
+                        notes = value;
                       },
                       keyboardType: TextInputType.multiline,
                       maxLines: 3,
@@ -130,11 +97,20 @@ class _AddGuestState extends State<AddGuest> {
                   onPress: () {
                     FirebaseHelper fl = new FirebaseHelper();
 
-                    Guest guest = Guest(email, name, _radioValue, note);
-                    event.guests.add(guest);
-                    fl.addGuest(event.id, guest, context);
-                    Navigator.popAndPushNamed(context, ViewGuests.id,
-                        arguments: event);
+                    if (budget != null && paidAmount != null) {
+                      Budget tempBudget = new Budget(budget, paidAmount, notes);
+
+                      fl.addBudget(event.id, tempBudget);
+                      event.budget.budget = budget;
+                      event.budget.paidAmount = paidAmount;
+                      event.budget.note = notes;
+                      Navigator.popAndPushNamed(context, ViewBudget.id,
+                          arguments: event);
+                    }
+                    // Guest guest = Guest(email, name, _radioValue, note);
+                    // event.guests.add(guest);
+                    // fl.addGuest(event.id, guest, context);
+
                     // showToast("Guest added");
                   },
                   title: "Save",
