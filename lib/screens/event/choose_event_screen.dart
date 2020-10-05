@@ -47,8 +47,8 @@ class _ChooseEventState extends State<ChooseEvent> {
         List<ToDoList> todos = new List<ToDoList>();
         List<ShoppingList> shoppingList = new List<ShoppingList>();
         element.data()['guests'].forEach((e) {
-          Guest tempGuest =
-              new Guest(e['email'], e['name'], e['gender'], e['note']);
+          Guest tempGuest = new Guest(
+              e['email'], e['name'], e['gender'], e['note'], e['invited']);
           guests.add(tempGuest);
         });
         element.data()['todoList'].forEach((e) {

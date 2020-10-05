@@ -75,7 +75,7 @@ class FirebaseHelper {
           .collection('events')
           .doc(id)
           .update({'budget': budget.toJson()});
-      showToast("Budget added");
+      showToast("Budget saved");
     });
   }
 }

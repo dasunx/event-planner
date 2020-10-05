@@ -1,9 +1,9 @@
 class ShoppingList {
-  final String name;
-  final int qty;
-  final double price;
-  final bool purchased;
-  final String note;
+  String name;
+  int qty;
+  double price;
+  bool purchased;
+  String note;
 
   ShoppingList(this.name, this.qty, this.price, this.note, this.purchased);
 

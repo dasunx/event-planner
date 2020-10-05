@@ -20,7 +20,6 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
   PageController pageController = new PageController();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     slides = getOnBoardItems();
   }

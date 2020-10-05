@@ -1,9 +1,13 @@
 import 'package:event_planner/classes/Event.dart';
+import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/classes/ShoppingList.dart';
+import 'package:event_planner/components/AlertDialog.dart';
 import 'package:event_planner/components/EmptyList.dart';
 import 'package:event_planner/components/SearchBar.dart';
+import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/shoppinglist/add_shoppinglist.dart';
+import 'package:event_planner/screens/shoppinglist/update_shopping_list.dart';
 import 'package:flutter/material.dart';
 
 class ViewShoppingList extends StatefulWidget {
@@ -49,6 +53,20 @@ class _ViewShoppingListState extends State<ViewShoppingList> {
         shopItems.addAll(shopList);
       });
     }
+  }
+
+  void deleteItem(int index) {
+    //todo add firebase function
+    event.shoppingList.removeAt(index);
+    setState(() {
+      shopItems.clear();
+      shopItems.addAll(event.shoppingList);
+      if (shopItems != null) {
+        if (shopItems.length <= 0) {
+          conditionx = false;
+        }
+      }
+    });
   }
 
   @override
@@ -171,30 +189,104 @@ class _ViewShoppingListState extends State<ViewShoppingList> {
 
     return Container(
       margin: EdgeInsets.only(right: 6, left: 6, top: 10),
-      child: Card(
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.all(18.0),
+      child: Container(
+          margin: EdgeInsets.only(left: 10),
           child: Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Icon(
-                  Icons.shopping_basket,
-                  color: kMainColor,
+              Expanded(
+                flex: 1,
+                child: Checkbox(
+                  value: item.purchased,
+                  onChanged: (value) {
+                    item.purchased = value;
+                    myFocusNode.unfocus();
+                    myCon.clear();
+                    setState(() {
+                      item.purchased = value;
+                    });
+                  },
                 ),
               ),
-              Text(
-                item.name,
-              ),
-              Spacer(),
-              Text(
-                "LKR  ${item.price.toString()}",
-              ),
+              Expanded(
+                flex: 12,
+                child: Card(
+                  elevation: 5,
+                  child: ExpansionTile(
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item.name.toString(),
+                            style: TextStyle(
+                                decoration: item.purchased
+                                    ? TextDecoration.lineThrough
+                                    : null),
+                          ),
+                        ),
+                        Expanded(
+                          child: Visibility(
+                            visible: item.purchased,
+                            child: Chip(
+                              backgroundColor: kMainColor,
+                              avatar: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                child: Icon(Icons.done),
+                              ),
+                              label: Text("Purchased"),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0, bottom: 10),
+                        child: Row(
+                          children: [
+                            Text(
+                              'LKR ${item.price.toString()}',
+                            ),
+                            Spacer(),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.popAndPushNamed(
+                                    context, UpdateShoppingList.id,
+                                    arguments:
+                                        UpdateGuestArguments(index, event));
+                              },
+                              icon: Icon(Icons.edit),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                showAlertDialog(
+                                    context,
+                                    "Delete Shopping list item",
+                                    "Are you sure, do you need to delete this item?",
+                                    "Delete",
+                                    "No", () {
+                                  deleteItem(index);
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                  showToast("Item deleted");
+                                }, () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                });
+                              },
+                              icon: Icon(
+                                Icons.delete_outline,
+                                color: Colors.red,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
             ],
-          ),
-        ),
-      ),
+          )),
     );
   }
 }
