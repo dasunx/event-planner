@@ -1,9 +1,13 @@
 import 'package:event_planner/classes/Event.dart';
+import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/classes/ToDoList.dart';
+import 'package:event_planner/components/AlertDialog.dart';
 import 'package:event_planner/components/EmptyList.dart';
 import 'package:event_planner/components/SearchBar.dart';
+import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/todolist/add_todo.dart';
+import 'package:event_planner/screens/todolist/update_todo.dart';
 import 'package:flutter/material.dart';
 
 class ViewToDo extends StatefulWidget {
@@ -52,14 +56,14 @@ class _ViewToDoState extends State<ViewToDo> {
     }
   }
 
-  void deleteToDoList(int index) {
+  void deleteItem(int index) {
+    //todo add firebase function
     event.todoList.removeAt(index);
     setState(() {
-      toDoLists.clear();
-      toDoLists.addAll(event.todoList);
-
-      if (toDoLists != null) {
-        if (toDoLists.length <= 0) {
+      toDoItems.clear();
+      toDoItems.addAll(event.todoList);
+      if (toDoItems != null) {
+        if (toDoItems.length <= 0) {
           conditionx = false;
         }
       }
@@ -148,7 +152,7 @@ class _ViewToDoState extends State<ViewToDo> {
                           Navigator.popAndPushNamed(context, AddToDo.id,
                               arguments: event);
                         },
-                        buttonText: "Add Guest",
+                        buttonText: "Add Todo",
                       ),
               ],
             ),
@@ -172,12 +176,10 @@ class _ViewToDoState extends State<ViewToDo> {
                 child: Checkbox(
                   value: check,
                   onChanged: (value) {
-                    item.completed = value;
                     myFocusNode.unfocus();
                     myCon.clear();
                     setState(() {
-                      toDoItems.clear();
-                      toDoItems.addAll(event.todoList);
+                      item.completed = value;
                     });
                   },
                 ),
@@ -221,6 +223,38 @@ class _ViewToDoState extends State<ViewToDo> {
                             Text(
                               item.details,
                             ),
+                            Spacer(),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.popAndPushNamed(
+                                    context, UpdateToDo.id,
+                                    arguments:
+                                        UpdateGuestArguments(index, event));
+                              },
+                              icon: Icon(Icons.edit),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                showAlertDialog(
+                                    context,
+                                    "Delete Todo item",
+                                    "Are you sure, do you need to delete this item?",
+                                    "Delete",
+                                    "No", () {
+                                  deleteItem(index);
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                  showToast("Item deleted");
+                                }, () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                });
+                              },
+                              icon: Icon(
+                                Icons.delete_outline,
+                                color: Colors.red,
+                              ),
+                            )
                           ],
                         ),
                       ),

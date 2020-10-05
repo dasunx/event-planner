@@ -1,7 +1,7 @@
 class ToDoList {
-  final String title;
+  String title;
   bool completed;
-  final String details;
+  String details;
 
   ToDoList(this.title, this.completed, this.details);
 

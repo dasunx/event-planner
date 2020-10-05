@@ -34,6 +34,7 @@ class _ContactUsState extends State<ContactUs> {
           ),
         ),
         body: Container(
+          color: kMainColor,
           child: Column(
             children: [
               AnimatedContainer(
@@ -42,7 +43,6 @@ class _ContactUsState extends State<ContactUs> {
                 duration: Duration(seconds: 1),
                 curve: Curves.fastOutSlowIn,
                 child: Container(
-                  color: kMainColor,
                   width: MediaQuery.of(context).size.width,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -59,10 +59,15 @@ class _ContactUsState extends State<ContactUs> {
                   ),
                 ),
               ),
-              AnimatedContainer(
-                duration: Duration(seconds: 1),
-                curve: Curves.fastOutSlowIn,
+              Expanded(
                 child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(keyboardH > 0 ? 0 : 30),
+                      topLeft: Radius.circular(keyboardH > 0 ? 0 : 30),
+                    ),
+                  ),
                   padding: EdgeInsets.all(40),
                   child: Column(
                     children: [

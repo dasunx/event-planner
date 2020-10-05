@@ -3,6 +3,7 @@ import 'package:event_planner/components/EmptyList.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/budget/add_budget_screen.dart';
+import 'package:event_planner/screens/budget/edit_budget.dart';
 import 'package:event_planner/screens/guest/view_guests.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
@@ -109,6 +110,25 @@ class _ViewBudgetState extends State<ViewBudget> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Tooltip(
+                    message: "update this event's budget",
+                    child: button(
+                      title: "Update budget",
+                      onPress: () {
+                        Navigator.pushNamed(context, EditBudget.id,
+                            arguments: event);
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: conditionx,
+              child: Expanded(
+                flex: 1,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Tooltip(
                     message: "Go to dashboard page to view full details",
                     child: button(
                       title: "View Dashboard",
@@ -120,7 +140,7 @@ class _ViewBudgetState extends State<ViewBudget> {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

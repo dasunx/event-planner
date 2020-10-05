@@ -1,52 +1,50 @@
+import 'package:event_planner/classes/Budget.dart';
 import 'package:event_planner/classes/Event.dart';
-import 'package:event_planner/classes/Guest.dart';
-import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/functions/FirebaseHelper.dart';
-import 'package:event_planner/screens/guest/view_guests.dart';
+import 'package:event_planner/screens/budget/view_budget.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-class AddGuest extends StatefulWidget {
-  static const String id = 'add_guest';
+class EditBudget extends StatefulWidget {
+  static const String id = 'edit_budget';
   @override
-  _AddGuestState createState() => _AddGuestState();
+  _EditBudgetState createState() => _EditBudgetState();
 }
 
-class _AddGuestState extends State<AddGuest> {
+class _EditBudgetState extends State<EditBudget> {
+  TextEditingController txbudget = new TextEditingController();
+  TextEditingController txNotes = new TextEditingController();
+  TextEditingController txPaid = new TextEditingController();
   Event event;
-  FocusNode myFocusNode;
+  bool conditionx = false;
+  int time = 1;
+  FirebaseHelper fl = new FirebaseHelper();
+  double budget;
+  String notes;
+  double paidAmount;
   @override
-  bool _radioValue = true;
-  String email;
-  String name;
-  String note;
-
-  @override
-  void initState() {
-    myFocusNode = FocusNode();
-    super.initState();
-  }
-
-  void _handleRadioInput(bool value) {
-    setState(() {
-      _radioValue = value;
-    });
-  }
-
-  @override
-  void dispose() {
-    myFocusNode.dispose();
-    super.dispose();
-  }
-
   Widget build(BuildContext context) {
-    event = ModalRoute.of(context).settings.arguments;
+    if (time == 1) {
+      event = ModalRoute.of(context).settings.arguments;
+      if (event.budget != null) {
+        if (event.budget.budget != null && event.budget.paidAmount != null) {
+          conditionx = true;
+          txbudget..text = event.budget.budget.toString();
+          txPaid..text = event.budget.paidAmount.toString();
+          txNotes..text = event.budget.note;
+          budget = event.budget.budget;
+          notes = event.budget.note;
+          paidAmount = event.budget.paidAmount;
+          print(conditionx);
+        }
+      }
+    }
+    time++;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '${event.title}',
+          "Update Budget",
         ),
       ),
       body: Container(
@@ -62,7 +60,7 @@ class _AddGuestState extends State<AddGuest> {
                 padding: const EdgeInsets.all(18.0),
                 child: Center(
                   child: Text(
-                    "Add Guest",
+                    "update Budget of ${event.title}",
                     style: kTitleTextStyle,
                     textAlign: TextAlign.center,
                   ),
@@ -73,47 +71,33 @@ class _AddGuestState extends State<AddGuest> {
                 child: Column(
                   children: [
                     TextField(
+                      controller: txbudget,
+                      keyboardType: TextInputType.number,
                       onChanged: (value) {
-                        email = value;
+                        budget = double.parse(value);
                       },
                       decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Guest email", labelText: 'Email'),
+                          hintText: "Total budget", labelText: 'Budget'),
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     TextField(
+                      controller: txPaid,
+                      keyboardType: TextInputType.number,
                       onChanged: (value) {
-                        name = value;
+                        paidAmount = double.parse(value);
                       },
                       decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Guest Name", labelText: 'Name'),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Radio(
-                          value: true,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioInput,
-                        ),
-                        Text('Male'),
-                        Radio(
-                          value: false,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioInput,
-                        ),
-                        Text('Female'),
-                      ],
+                          hintText: "Paid amount", labelText: 'Paid amount'),
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     TextField(
+                      controller: txNotes,
                       onChanged: (value) {
-                        note = value;
+                        notes = value;
                       },
                       keyboardType: TextInputType.multiline,
                       maxLines: 3,
@@ -128,24 +112,24 @@ class _AddGuestState extends State<AddGuest> {
                 padding: const EdgeInsets.all(8.0),
                 child: button(
                   onPress: () {
-                    if (email != null &&
-                        name != null &&
-                        _radioValue != null &&
-                        note != null) {
-                      FirebaseHelper fl = new FirebaseHelper();
+                    FirebaseHelper fl = new FirebaseHelper();
 
-                      Guest guest =
-                          Guest(email, name, _radioValue, note, false);
-                      event.guests.add(guest);
-                      fl.addGuest(event.id, guest, context);
-                    } else {
-                      showToast("No guest added");
+                    if (budget != null && paidAmount != null) {
+                      Budget tempBudget = new Budget(budget, paidAmount, notes);
+
+                      fl.addBudget(event.id, tempBudget);
+                      event.budget.budget = budget;
+                      event.budget.paidAmount = paidAmount;
+                      event.budget.note = notes;
+                      Navigator.pop(context);
                     }
-                    Navigator.popAndPushNamed(context, ViewGuests.id,
-                        arguments: event);
+                    // Guest guest = Guest(email, name, _radioValue, note);
+                    // event.guests.add(guest);
+                    // fl.addGuest(event.id, guest, context);
+
                     // showToast("Guest added");
                   },
-                  title: "Save",
+                  title: "update",
                 ),
               ),
               Padding(

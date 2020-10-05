@@ -56,6 +56,7 @@ class _ViewGuestsState extends State<ViewGuests> {
   }
 
   void deleteGuest(int index) {
+    //todo add firebase function
     event.guests.removeAt(index);
     setState(() {
       guests.clear();
@@ -87,7 +88,7 @@ class _ViewGuestsState extends State<ViewGuests> {
         visible: conditionx,
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, AddGuest.id, arguments: event);
+            Navigator.popAndPushNamed(context, AddGuest.id, arguments: event);
           },
           backgroundColor: kMainColor,
           elevation: 10,
@@ -245,9 +246,14 @@ class _ViewGuestsState extends State<ViewGuests> {
                             padding: const EdgeInsets.all(8.0),
                             child: button(
                               onPress: () {
-                                print("Invite");
+                                print(guest.invited
+                                    ? "Already Invited"
+                                    : "Invite");
+                                setState(() {
+                                  guest.invited = true;
+                                });
                               },
-                              title: "Invite",
+                              title: guest.invited ? "Invited" : "invite",
                             ),
                           ),
                         ),
@@ -255,7 +261,7 @@ class _ViewGuestsState extends State<ViewGuests> {
                           flex: 1,
                           child: IconButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, UpdateGuest.id,
+                              Navigator.popAndPushNamed(context, UpdateGuest.id,
                                   arguments:
                                       UpdateGuestArguments(index, event));
                             },

@@ -187,13 +187,6 @@ class _MainDrawerState extends State<MainDrawer> {
             color: Colors.black,
           ),
           DrawerListTile(
-            icon: Icons.dashboard,
-            onPress: () {
-              showToast("Dashboard under development");
-            },
-            title: "Dashboard",
-          ),
-          DrawerListTile(
             icon: Icons.phone,
             onPress: () {
               Navigator.pushNamed(context, ContactUs.id);

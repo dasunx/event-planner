@@ -181,7 +181,7 @@ class _UpdateGuestState extends State<UpdateGuest> {
                         event.guests[index].name = name;
                         event.guests[index].gender = _radioValue;
                         event.guests[index].note = note;
-
+                        event.guests[index].invited = false;
                         fl.updateGuests(event.guests, event.id);
                         Navigator.popAndPushNamed(context, ViewGuests.id,
                             arguments: event);
