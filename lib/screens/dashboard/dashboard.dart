@@ -6,6 +6,7 @@ import 'package:event_planner/components/GuestChart.dart';
 import 'package:event_planner/components/LeftCentricGraphCard.dart';
 import 'package:event_planner/components/RightCentricGraphCard.dart';
 import 'package:event_planner/components/TodoChart.dart';
+import 'package:event_planner/components/ZeroDataCard.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatefulWidget {
@@ -20,13 +21,13 @@ class _DashboardState extends State<Dashboard> {
   int guestCount;
   int guestMaleCount = 0;
   int guestFemaleCount = 0;
-  double maleToFemalePercentage;
+  double maleToFemalePercentage = 0.0;
 
   var time = 1;
   Event event;
   var guestsList;
   var guests = List<Guest>();
-  bool conditionx = false;
+  bool conditionX = false;
   @override
   void initState() {
     myFocusNode = FocusNode();
@@ -39,24 +40,23 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     if (time == 1) {
       event = ModalRoute.of(context).settings.arguments;
-      setState(() {
-        if (event.guests != null) {
-          guestsList = event.guests;
-          guests.addAll(guestsList);
-          if (event.guests.length > 0) {
-            conditionx = true;
-            guestCount = event.guests.length;
-            for (var g in event.guests) {
-              if (g.gender == true) {
-                guestMaleCount++;
-              } else {
-                guestFemaleCount++;
-              }
+
+      if (event.guests != null) {
+        guestsList = event.guests;
+        guests.addAll(guestsList);
+        if (event.guests.length > 0) {
+          conditionX = true;
+          guestCount = event.guests.length;
+          for (var g in event.guests) {
+            if (g.gender == true) {
+              guestMaleCount++;
+            } else {
+              guestFemaleCount++;
             }
           }
           maleToFemalePercentage = (guestMaleCount / guestCount) * 100;
         }
-      });
+      }
     }
 
     time++;
@@ -84,19 +84,20 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           Expanded(
-            child: LeftCentricGraphCard(
-              graphType: GuestChart(
-                data: guestData,
-              ),
-              title: "Guests",
-              subTitle: maleToFemalePercentage.toStringAsFixed(1) + "%",
-              txtChildren: [
-                Text('Total : ${guestCount}'),
-                Text('Male: ${guestMaleCount}'),
-                Text('Female: ${guestFemaleCount}'),
-              ],
-            ),
-          ),
+              child: conditionX
+                  ? LeftCentricGraphCard(
+                      graphType: GuestChart(
+                        data: guestData,
+                      ),
+                      title: "Guests",
+                      subTitle: maleToFemalePercentage.toStringAsFixed(1) + "%",
+                      txtChildren: [
+                        Text('Total : ${guestCount}'),
+                        Text('Male: ${guestMaleCount}'),
+                        Text('Female: ${guestFemaleCount}'),
+                      ],
+                    )
+                  : ZeroDataCard(title: "Guests")),
           Expanded(
             child: RightCentricGraphCard(
               graphType: TodoChart(
