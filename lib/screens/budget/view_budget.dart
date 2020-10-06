@@ -25,9 +25,12 @@ class _ViewBudgetState extends State<ViewBudget> {
     if (event.budget != null) {
       if (event.budget.budget != null && event.budget.paidAmount != null) {
         conditionx = true;
-        dataMap.putIfAbsent("paidAmount", () => event.budget.paidAmount);
-        dataMap.putIfAbsent(
-            "balance", () => (event.budget.budget - event.budget.paidAmount));
+        setState(() {
+          dataMap.putIfAbsent("paidAmount", () => event.budget.paidAmount);
+          dataMap.putIfAbsent(
+              "balance", () => (event.budget.budget - event.budget.paidAmount));
+        });
+
         print(conditionx);
       }
     }
@@ -114,7 +117,7 @@ class _ViewBudgetState extends State<ViewBudget> {
                     child: button(
                       title: "Update budget",
                       onPress: () {
-                        Navigator.pushNamed(context, EditBudget.id,
+                        Navigator.popAndPushNamed(context, EditBudget.id,
                             arguments: event);
                       },
                     ),
