@@ -107,6 +107,7 @@ class _AddBudgetState extends State<AddBudget> {
                       Navigator.popAndPushNamed(context, ViewBudget.id,
                           arguments: event);
                     }
+
                     // Guest guest = Guest(email, name, _radioValue, note);
                     // event.guests.add(guest);
                     // fl.addGuest(event.id, guest, context);
