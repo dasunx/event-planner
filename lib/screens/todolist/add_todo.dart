@@ -132,7 +132,8 @@ class _AddToDoState extends State<AddToDo> {
                     event.todoList.add(td);
                     fl.addTodo(event.id, td, context);
                     // fl.addGuest(event.id, guest, context);
-                    Navigator.pushNamed(context, ViewToDo.id, arguments: event);
+                    Navigator.popAndPushNamed(context, ViewToDo.id,
+                        arguments: event);
                   },
                   title: "Save",
                 ),

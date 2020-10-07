@@ -121,7 +121,8 @@ class _EditBudgetState extends State<EditBudget> {
                       event.budget.budget = budget;
                       event.budget.paidAmount = paidAmount;
                       event.budget.note = notes;
-                      Navigator.pop(context);
+                      Navigator.popAndPushNamed(context, ViewBudget.id,
+                          arguments: event);
                     }
                     // Guest guest = Guest(email, name, _radioValue, note);
                     // event.guests.add(guest);
