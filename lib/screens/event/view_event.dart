@@ -1,12 +1,11 @@
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/components/IconContent.dart';
-import 'package:event_planner/components/button.dart';
+import 'package:event_planner/components/WideStyledBtn.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/dashboard/dashboard.dart';
 import 'package:event_planner/screens/budget/view_budget.dart';
 import 'package:event_planner/screens/guest/view_guests.dart';
 import 'package:event_planner/screens/shoppinglist/view_shoppinglsit.dart';
-import 'package:event_planner/screens/todolist/add_todo.dart';
 import 'package:event_planner/screens/todolist/view_todo.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -20,6 +19,18 @@ class ViewEvent extends StatefulWidget {
 class _ViewEventState extends State<ViewEvent> {
   Event event;
 
+/*  void deleteItem(int index) {
+    event.delete();
+  }
+
+  Future<void> deleteUser() {
+    return users
+        .doc('ABC123')
+        .delete()
+        .then((value) => print("User Deleted"))
+        .catchError((error) => print("Failed to delete user: $error"));
+  }*/
+
   @override
   Widget build(BuildContext context) {
     event = ModalRoute.of(context).settings.arguments;
@@ -29,52 +40,75 @@ class _ViewEventState extends State<ViewEvent> {
         title: Text("View Event"),
       ),
       body: Container(
-        padding: EdgeInsets.only(left: 10, right: 10),
         child: Column(
           children: [
             Expanded(
               flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
-                      children: [
-                        eventDetails("Event"),
-                        Spacer(),
-                        eventDetails(
-                          event.title,
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        eventDetails(
-                          "Date",
-                        ),
-                        Spacer(),
-                        eventDetails(
-                            "${DateFormat.yMMMd().format(event.startDate).toString()}"),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        eventDetails(
-                          "Venue",
-                        ),
-                        Spacer(),
-                        eventDetails(event.location),
-                      ],
-                    ),
-                  ],
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        blurRadius: 5,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0))),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Row(
+                        children: [
+                          eventDetails("Event"),
+                          Spacer(),
+                          eventDetails(
+                            event.title,
+                          )
+                        ],
+                      ),
+                      Divider(),
+                      Row(
+                        children: [
+                          eventDetails(
+                            "Date",
+                          ),
+                          Spacer(),
+                          eventDetails(
+                              "${DateFormat.yMMMd().format(event.startDate).toString()}"),
+                        ],
+                      ),
+                      Divider(),
+                      Row(
+                        children: [
+                          eventDetails(
+                            "Actions",
+                          ),
+                          Spacer(),
+                          IconButton(
+                            onPressed: () {
+                              print("delete btn clicked");
+                            },
+                            icon: Icon(
+                              Icons.delete_outline,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             Expanded(
-              flex: 8,
+              flex: 7,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Row(
                     children: [
@@ -87,7 +121,7 @@ class _ViewEventState extends State<ViewEvent> {
                           },
                           icon: Icons.done,
                           label: "To Do",
-                          color: Colors.white,
+                          color: kMainColor,
                         ),
                       ),
                       SizedBox(
@@ -102,7 +136,7 @@ class _ViewEventState extends State<ViewEvent> {
                           },
                           icon: Icons.person,
                           label: "Guest",
-                          color: Colors.white,
+                          color: kMainColor,
                         ),
                       )
                     ],
@@ -120,8 +154,8 @@ class _ViewEventState extends State<ViewEvent> {
                                 arguments: event);
                           },
                           icon: Icons.list,
-                          label: "Shopping List",
-                          color: Colors.white,
+                          label: "Shopping",
+                          color: kMainColor,
                         ),
                       ),
                       SizedBox(
@@ -136,7 +170,7 @@ class _ViewEventState extends State<ViewEvent> {
                           },
                           icon: Icons.attach_money,
                           label: "Budget",
-                          color: Colors.white,
+                          color: kMainColor,
                         ),
                       )
                     ],
@@ -145,17 +179,20 @@ class _ViewEventState extends State<ViewEvent> {
               ),
             ),
             Expanded(
-              flex: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              flex: 3,
+              child: Row(
                 children: [
-                  button(
-                    onPress: () {
-                      Navigator.pushNamed(context, Dashboard.id,
-                          arguments: event);
-                    },
-                    title: "Dashboard",
-                  ),
+                  Expanded(
+                    child: WideStyledBtn(
+                      onPress: () {
+                        Navigator.pushNamed(context, Dashboard.id,
+                            arguments: event);
+                      },
+                      icon: Icons.dashboard,
+                      label: "Dashboard",
+                      color: kMainColor,
+                    ),
+                  )
                 ],
               ),
             )
