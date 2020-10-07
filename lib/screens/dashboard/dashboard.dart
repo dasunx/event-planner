@@ -18,16 +18,23 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   TextEditingController myCon = TextEditingController();
   FocusNode myFocusNode;
-  int guestCount;
+  var time = 1;
+  Event event;
+  //guests
+  var guestsList;
+  var guests = List<Guest>();
+  bool conditionGuest = false;
+  int guestCount = 0;
   int guestMaleCount = 0;
   int guestFemaleCount = 0;
   double maleToFemalePercentage = 0.0;
+  //tasks
+  bool conditionTodo = false;
+  int todoCount = 0;
+  int remainingTodo = 0;
+  int completedTodo = 0;
+  double todoCompletedPercentage = 0.0;
 
-  var time = 1;
-  Event event;
-  var guestsList;
-  var guests = List<Guest>();
-  bool conditionX = false;
   @override
   void initState() {
     myFocusNode = FocusNode();
@@ -45,7 +52,7 @@ class _DashboardState extends State<Dashboard> {
         guestsList = event.guests;
         guests.addAll(guestsList);
         if (event.guests.length > 0) {
-          conditionX = true;
+          conditionGuest = true;
           guestCount = event.guests.length;
           for (var g in event.guests) {
             if (g.gender == true) {
@@ -57,12 +64,30 @@ class _DashboardState extends State<Dashboard> {
           maleToFemalePercentage = (guestMaleCount / guestCount) * 100;
         }
       }
+      if (event.todoList != null) {
+        if (event.todoList.length > 0) {
+          conditionTodo = true;
+          todoCount = event.todoList.length;
+          for (var t in event.todoList) {
+            if (t.completed == true) {
+              completedTodo++;
+            } else {
+              remainingTodo++;
+            }
+          }
+          todoCompletedPercentage = (completedTodo / todoCount) * 100;
+        }
+      }
     }
 
     time++;
     final List<GuestDonut> guestData = [
       GuestDonut('Male', guestMaleCount),
       GuestDonut('Female', guestFemaleCount)
+    ];
+    final List<TodoDonut> taskData = [
+      TodoDonut(1, completedTodo),
+      TodoDonut(2, remainingTodo)
     ];
 
     return Scaffold(
@@ -74,17 +99,22 @@ class _DashboardState extends State<Dashboard> {
       body: Column(
         children: [
           Expanded(
-            child: RightCentricGraphCard(
-              graphType: TodoChart(
-                data: todoData,
-              ),
-              title: "TASKS",
-              subTitle: "60%",
-              txtChildren: [Text('Total : 25'), Text('Remaining: 10')],
-            ),
+            child: conditionTodo
+                ? RightCentricGraphCard(
+                    graphType: TodoChart(
+                      data: taskData,
+                    ),
+                    title: "TASKS",
+                    subTitle: todoCompletedPercentage.toStringAsFixed(1) + "%",
+                    txtChildren: [
+                      Text('Total : $todoCount'),
+                      Text('Remaining: $remainingTodo')
+                    ],
+                  )
+                : ZeroDataCard(title: "Tasks"),
           ),
           Expanded(
-              child: conditionX
+              child: conditionGuest
                   ? LeftCentricGraphCard(
                       graphType: GuestChart(
                         data: guestData,
