@@ -42,7 +42,9 @@ class ZeroDataCard extends StatelessWidget {
                         'Add $title',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      },
                       textColor: Colors.blueAccent,
                     ),
                     const SizedBox(width: 8),

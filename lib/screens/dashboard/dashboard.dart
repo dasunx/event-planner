@@ -1,7 +1,9 @@
+import 'package:event_planner/classes/BudgetDonut.dart';
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/classes/Guest.dart';
 import 'package:event_planner/classes/GuestDonut.dart';
 import 'package:event_planner/classes/TodoDonut.dart';
+import 'package:event_planner/components/BudgetChart.dart';
 import 'package:event_planner/components/GuestChart.dart';
 import 'package:event_planner/components/LeftCentricGraphCard.dart';
 import 'package:event_planner/components/RightCentricGraphCard.dart';
@@ -34,6 +36,14 @@ class _DashboardState extends State<Dashboard> {
   int remainingTodo = 0;
   int completedTodo = 0;
   double todoCompletedPercentage = 0.0;
+  //budget
+  bool conditionBudget = false;
+  double totalBudget = 0.0;
+  double paidAmount = 0.0;
+  bool conditionShoppingList = false;
+  double shoppingListTotal = 0.0;
+  double leftBudget = 0.0;
+  double leftBudgetPercentage = 0.0;
 
   @override
   void initState() {
@@ -41,13 +51,11 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
   }
 
-  final List<TodoDonut> todoData = [TodoDonut(1, 20), TodoDonut(2, 15)];
-
   @override
   Widget build(BuildContext context) {
     if (time == 1) {
       event = ModalRoute.of(context).settings.arguments;
-
+      //guest info
       if (event.guests != null) {
         guestsList = event.guests;
         guests.addAll(guestsList);
@@ -64,6 +72,7 @@ class _DashboardState extends State<Dashboard> {
           maleToFemalePercentage = (guestMaleCount / guestCount) * 100;
         }
       }
+      //task info
       if (event.todoList != null) {
         if (event.todoList.length > 0) {
           conditionTodo = true;
@@ -78,6 +87,26 @@ class _DashboardState extends State<Dashboard> {
           todoCompletedPercentage = (completedTodo / todoCount) * 100;
         }
       }
+      //budget info
+      if (event.budget != null) {
+        if (event.budget.paidAmount != null) {
+          conditionBudget = true;
+          totalBudget = event.budget.budget;
+          paidAmount = event.budget.paidAmount;
+          todoCompletedPercentage = (completedTodo / todoCount) * 100;
+        }
+        //looping through the shopping list
+        if (event.shoppingList != null) {
+          if (event.shoppingList.length > 0) {
+            conditionShoppingList = true;
+            event.shoppingList.forEach((element) {
+              shoppingListTotal += element.price;
+            });
+          }
+        }
+        leftBudget = totalBudget - (paidAmount + shoppingListTotal);
+        leftBudgetPercentage = ((leftBudget) / totalBudget * 100);
+      }
     }
 
     time++;
@@ -86,8 +115,13 @@ class _DashboardState extends State<Dashboard> {
       GuestDonut('Female', guestFemaleCount)
     ];
     final List<TodoDonut> taskData = [
-      TodoDonut(1, completedTodo),
-      TodoDonut(2, remainingTodo)
+      TodoDonut("Done", completedTodo),
+      TodoDonut("Left", remainingTodo)
+    ];
+    final List<BudgetDonut> budgetData = [
+      BudgetDonut('Initial', paidAmount),
+      BudgetDonut('Shopping', shoppingListTotal),
+      BudgetDonut('Remaining', leftBudget)
     ];
 
     return Scaffold(
@@ -129,14 +163,22 @@ class _DashboardState extends State<Dashboard> {
                     )
                   : ZeroDataCard(title: "Guests")),
           Expanded(
-            child: RightCentricGraphCard(
-              graphType: TodoChart(
-                data: todoData,
-              ),
-              title: "TASKS",
-              subTitle: "60%",
-              txtChildren: [Text('Total : 25'), Text('Remaining: 10')],
-            ),
+            child: conditionBudget
+                ? RightCentricGraphCard(
+                    graphType: BudgetChart(
+                      data: budgetData,
+                    ),
+                    title: "Budget",
+                    subTitle: leftBudgetPercentage.toStringAsFixed(1) + "%",
+                    txtChildren: [
+                      Text('Total : $totalBudget'),
+                      Text('Paid  : ${paidAmount + shoppingListTotal}'),
+                      Text('Left   : $leftBudget'),
+                    ],
+                  )
+                : ZeroDataCard(
+                    title: "Budget",
+                  ),
           ),
         ],
       ),
