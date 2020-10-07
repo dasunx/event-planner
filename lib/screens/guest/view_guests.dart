@@ -7,6 +7,7 @@ import 'package:event_planner/components/SearchBar.dart';
 import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/functions/FirebaseHelper.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
 import 'package:event_planner/screens/guest/update_guest.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,8 @@ class _ViewGuestsState extends State<ViewGuests> {
   }
 
   void deleteGuest(int index) {
-    //todo add firebase function
+    FirebaseHelper fl = new FirebaseHelper();
+    fl.removeGuest(event.id, event.guests[index]);
     event.guests.removeAt(index);
     setState(() {
       guests.clear();
@@ -281,7 +283,6 @@ class _ViewGuestsState extends State<ViewGuests> {
                                 deleteGuest(index);
                                 Navigator.of(context, rootNavigator: true)
                                     .pop();
-                                showToast("Guest deleted");
                               }, () {
                                 Navigator.of(context, rootNavigator: true)
                                     .pop();

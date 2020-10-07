@@ -1,10 +1,13 @@
 import 'package:event_planner/classes/Event.dart';
+import 'package:event_planner/components/AlertDialog.dart';
 import 'package:event_planner/components/IconContent.dart';
 import 'package:event_planner/components/WideStyledBtn.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/functions/FirebaseHelper.dart';
 import 'package:event_planner/screens/dashboard/dashboard.dart';
 import 'package:event_planner/screens/budget/view_budget.dart';
 import 'package:event_planner/screens/guest/view_guests.dart';
+import 'package:event_planner/screens/home_screen.dart';
 import 'package:event_planner/screens/shoppinglist/view_shoppinglsit.dart';
 import 'package:event_planner/screens/todolist/view_todo.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +94,20 @@ class _ViewEventState extends State<ViewEvent> {
                           Spacer(),
                           IconButton(
                             onPressed: () {
-                              print("delete btn clicked");
+                              showAlertDialog(
+                                  context,
+                                  "Delete ${event.title} ?",
+                                  "Are you sure, do you need to delete this event?",
+                                  "Delete",
+                                  "No", () {
+                                FirebaseHelper fl = new FirebaseHelper();
+                                fl.removeEvent(event.id);
+                                Navigator.popAndPushNamed(
+                                    context, HomeScreen.id);
+                              }, () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                              });
                             },
                             icon: Icon(
                               Icons.delete_outline,

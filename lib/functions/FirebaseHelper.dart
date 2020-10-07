@@ -78,4 +78,22 @@ class FirebaseHelper {
       showToast("Budget saved");
     });
   }
+
+  void removeEvent(String id) {
+    _instance.runTransaction((transaction) async {
+      var res = await _instance.collection('events').doc(id).delete();
+      showToast("Event Deleted");
+    });
+  }
+
+  void removeGuest(String id, Guest guest) {
+    List obj = [guest.toJson()];
+    _instance.runTransaction((transaction) async {
+      var res = await _instance
+          .collection('events')
+          .doc(id)
+          .update({'guests': FieldValue.arrayRemove(obj)});
+      showToast("Guest removed");
+    });
+  }
 }
