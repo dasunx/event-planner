@@ -7,13 +7,13 @@ class TodoChart extends StatelessWidget {
   TodoChart({@required this.data});
   @override
   Widget build(BuildContext context) {
-    List<charts.Series<TodoDonut, int>> series = [
+    List<charts.Series<TodoDonut, String>> series = [
       charts.Series(
         id: "Todo",
         data: data,
         domainFn: (TodoDonut todo, _) => todo.catId,
         measureFn: (TodoDonut todo, _) => todo.count,
-        labelAccessorFn: (TodoDonut row, _) => '${row.catId}: ${row.count}',
+        labelAccessorFn: (TodoDonut row, _) => '${row.catId}',
       )
     ];
     return Container(

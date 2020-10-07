@@ -1,5 +1,5 @@
 class TodoDonut {
-  final int catId;
+  final String catId;
   final int count;
   TodoDonut(this.catId, this.count);
 }
