@@ -1,12 +1,12 @@
 import 'package:event_planner/constants.dart';
 import 'package:flutter/material.dart';
 
-class IconContent extends StatelessWidget {
+class WideStyledBtn extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
   final Function onPress;
-  IconContent({this.icon, this.label, this.color, this.onPress});
+  WideStyledBtn({this.icon, this.label, this.color, this.onPress});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class IconContent extends StatelessWidget {
                     ),
                   ]),
               padding: EdgeInsets.all(20),
-              child: Column(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Icon(
@@ -42,7 +42,7 @@ class IconContent extends StatelessWidget {
                     color: color,
                   ),
                   SizedBox(
-                    height: 15.0,
+                    width: 25.0,
                   ),
                   Text(
                     label,
