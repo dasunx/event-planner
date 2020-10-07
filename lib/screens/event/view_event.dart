@@ -1,7 +1,5 @@
 import 'package:event_planner/classes/Event.dart';
-import 'package:event_planner/components/AlertDialog.dart';
 import 'package:event_planner/components/IconContent.dart';
-import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/components/WideStyledBtn.dart';
 import 'package:event_planner/constants.dart';
 import 'package:event_planner/screens/dashboard/dashboard.dart';
@@ -93,20 +91,7 @@ class _ViewEventState extends State<ViewEvent> {
                           Spacer(),
                           IconButton(
                             onPressed: () {
-                              showAlertDialog(
-                                  context,
-                                  "Wanna delete this event ?",
-                                  "You will not be able to restore it again",
-                                  "Delete",
-                                  "No", () {
-                                //deleteItem(index);
-                                Navigator.of(context, rootNavigator: true)
-                                    .pop();
-                                showToast("Item deleted");
-                              }, () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .pop();
-                              });
+                              print("delete btn clicked");
                             },
                             icon: Icon(
                               Icons.delete_outline,
