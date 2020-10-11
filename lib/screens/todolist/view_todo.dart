@@ -101,10 +101,8 @@ class _ViewToDoState extends State<ViewToDo> {
       ),
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text(
-          '${event.title}',
-        ),
-      ),
+          title: Text('${event.title}', style: TextStyle(color: Colors.white)),
+          iconTheme: new IconThemeData(color: Colors.white)),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());

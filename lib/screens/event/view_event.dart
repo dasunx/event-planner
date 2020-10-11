@@ -40,8 +40,8 @@ class _ViewEventState extends State<ViewEvent> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("View Event"),
-      ),
+          title: Text("View Event", style: TextStyle(color: Colors.white)),
+          iconTheme: new IconThemeData(color: Colors.white)),
       body: Container(
         child: Column(
           children: [

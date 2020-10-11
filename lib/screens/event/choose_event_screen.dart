@@ -160,10 +160,8 @@ class _ChooseEventState extends State<ChooseEvent> {
         resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text(
-            args.subTitle,
-          ),
-        ),
+            title: Text(args.subTitle, style: TextStyle(color: Colors.white)),
+            iconTheme: new IconThemeData(color: Colors.white)),
         drawer: MainDrawer(
           id: args.routeScreen,
         ),

@@ -45,10 +45,8 @@ class _AddGuestState extends State<AddGuest> {
     event = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          '${event.title}',
-        ),
-      ),
+          title: Text('${event.title}', style: TextStyle(color: Colors.white)),
+          iconTheme: new IconThemeData(color: Colors.white)),
       body: Container(
         margin: EdgeInsets.only(left: 10, right: 10),
         child: GestureDetector(

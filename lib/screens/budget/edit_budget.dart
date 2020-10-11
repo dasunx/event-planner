@@ -43,10 +43,8 @@ class _EditBudgetState extends State<EditBudget> {
     time++;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Update Budget",
-        ),
-      ),
+          title: Text("Update Budget", style: TextStyle(color: Colors.white)),
+          iconTheme: new IconThemeData(color: Colors.white)),
       body: Container(
         margin: EdgeInsets.only(left: 10, right: 10),
         child: GestureDetector(
