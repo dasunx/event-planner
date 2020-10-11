@@ -171,10 +171,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-          title: Text(
-            'Event Planner',
-          ),
-        ),
+            title: Text('Event Planner', style: TextStyle(color: Colors.white)),
+            iconTheme: new IconThemeData(color: Colors.white)),
         body: ModalProgressHUD(
           inAsyncCall: loading,
           child: Column(

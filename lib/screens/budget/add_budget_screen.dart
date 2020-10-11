@@ -29,10 +29,8 @@ class _AddBudgetState extends State<AddBudget> {
     event = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Add Budget",
-        ),
-      ),
+          title: Text("Add Budget", style: TextStyle(color: Colors.white)),
+          iconTheme: new IconThemeData(color: Colors.white)),
       body: Container(
         margin: EdgeInsets.only(left: 10, right: 10),
         child: GestureDetector(

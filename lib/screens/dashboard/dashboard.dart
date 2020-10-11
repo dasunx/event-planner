@@ -92,10 +92,8 @@ class _DashboardState extends State<Dashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'SUMMARY',
-        ),
-      ),
+          title: Text('SUMMARY', style: TextStyle(color: Colors.white)),
+          iconTheme: new IconThemeData(color: Colors.white)),
       body: Column(
         children: [
           Expanded(

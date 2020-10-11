@@ -70,10 +70,8 @@ class _AddEventState extends State<AddEvent> {
           key: globalScaffoldKey,
           resizeToAvoidBottomPadding: false,
           appBar: AppBar(
-            title: Text(
-              'Add Event',
-            ),
-          ),
+              title: Text('Add Event', style: TextStyle(color: Colors.white)),
+              iconTheme: new IconThemeData(color: Colors.white)),
           body: Container(
             padding: EdgeInsets.only(left: 10, right: 10),
             child: Column(
