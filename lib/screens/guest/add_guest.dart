@@ -47,118 +47,121 @@ class _AddGuestState extends State<AddGuest> {
       appBar: AppBar(
           title: Text('${event.title}', style: TextStyle(color: Colors.white)),
           iconTheme: new IconThemeData(color: Colors.white)),
-      body: Container(
-        margin: EdgeInsets.only(left: 10, right: 10),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            FocusScope.of(context).requestFocus(new FocusNode());
-          },
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Center(
-                  child: Text(
-                    "Add Guest",
-                    style: kTitleTextStyle,
-                    textAlign: TextAlign.center,
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height - 100,
+          margin: EdgeInsets.only(left: 10, right: 10),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Center(
+                    child: Text(
+                      "Add Guest",
+                      style: kTitleTextStyle,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 28.0),
-                child: Column(
-                  children: [
-                    TextField(
-                      onChanged: (value) {
-                        email = value;
-                      },
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Guest email", labelText: 'Email'),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      onChanged: (value) {
-                        name = value;
-                      },
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Guest Name", labelText: 'Name'),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Radio(
-                          value: true,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioInput,
-                        ),
-                        Text('Male'),
-                        Radio(
-                          value: false,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioInput,
-                        ),
-                        Text('Female'),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      onChanged: (value) {
-                        note = value;
-                      },
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 3,
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Notes", labelText: 'Notes'),
-                    ),
-                  ],
+                Container(
+                  padding: const EdgeInsets.only(top: 28.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        onChanged: (value) {
+                          email = value;
+                        },
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: "Guest email", labelText: 'Email'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        onChanged: (value) {
+                          name = value;
+                        },
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: "Guest Name", labelText: 'Name'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: true,
+                            groupValue: _radioValue,
+                            onChanged: _handleRadioInput,
+                          ),
+                          Text('Male'),
+                          Radio(
+                            value: false,
+                            groupValue: _radioValue,
+                            onChanged: _handleRadioInput,
+                          ),
+                          Text('Female'),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        onChanged: (value) {
+                          note = value;
+                        },
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 3,
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: "Notes", labelText: 'Notes'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: button(
-                  onPress: () {
-                    if (email != null &&
-                        name != null &&
-                        _radioValue != null &&
-                        note != null) {
-                      FirebaseHelper fl = new FirebaseHelper();
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: button(
+                    onPress: () {
+                      if (email != null &&
+                          name != null &&
+                          _radioValue != null &&
+                          note != null) {
+                        FirebaseHelper fl = new FirebaseHelper();
 
-                      Guest guest =
-                          Guest(email, name, _radioValue, note, false);
-                      event.guests.add(guest);
-                      fl.addGuest(event.id, guest, context);
-                    } else {
-                      showToast("No guest added");
-                    }
-                    Navigator.popAndPushNamed(context, ViewGuests.id,
-                        arguments: event);
-                    // showToast("Guest added");
-                  },
-                  title: "Save",
+                        Guest guest =
+                            Guest(email, name, _radioValue, note, false);
+                        event.guests.add(guest);
+                        fl.addGuest(event.id, guest, context);
+                      } else {
+                        showToast("No guest added");
+                      }
+                      Navigator.popAndPushNamed(context, ViewGuests.id,
+                          arguments: event);
+                      // showToast("Guest added");
+                    },
+                    title: "Save",
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: button(
-                  onPress: () {
-                    Navigator.pop(context);
-                  },
-                  title: "Cancel",
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: button(
+                    onPress: () {
+                      Navigator.pop(context);
+                    },
+                    title: "Cancel",
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              )
-            ],
+                SizedBox(
+                  height: 20,
+                )
+              ],
+            ),
           ),
         ),
       ),

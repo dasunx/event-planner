@@ -308,7 +308,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
-                        child: TextButton(
+                        child: MyTextButton(
                           text: "Forgot password?",
                           onPress: () {
                             Navigator.pushNamed(
@@ -316,7 +316,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
                       ),
-                      TextButton(
+                      MyTextButton(
                         text: "New User? Create account here",
                         onPress: () {
                           Navigator.pushNamed(context, RegistraionScreen.id);

@@ -137,7 +137,7 @@ class _ViewEventState extends State<ViewEvent> {
                           },
                           icon: Icons.done,
                           label: "To Do",
-                          color: kMainColor,
+                          color: Colors.white,
                         ),
                       ),
                       SizedBox(
@@ -152,7 +152,7 @@ class _ViewEventState extends State<ViewEvent> {
                           },
                           icon: Icons.person,
                           label: "Guest",
-                          color: kMainColor,
+                          color: Colors.white,
                         ),
                       )
                     ],
@@ -171,7 +171,7 @@ class _ViewEventState extends State<ViewEvent> {
                           },
                           icon: Icons.list,
                           label: "Shopping",
-                          color: kMainColor,
+                          color: Colors.white,
                         ),
                       ),
                       SizedBox(
@@ -186,7 +186,7 @@ class _ViewEventState extends State<ViewEvent> {
                           },
                           icon: Icons.attach_money,
                           label: "Budget",
-                          color: kMainColor,
+                          color: Colors.white,
                         ),
                       )
                     ],
@@ -206,7 +206,7 @@ class _ViewEventState extends State<ViewEvent> {
                       },
                       icon: Icons.dashboard,
                       label: "Dashboard",
-                      color: kMainColor,
+                      color: Colors.white,
                     ),
                   )
                 ],
