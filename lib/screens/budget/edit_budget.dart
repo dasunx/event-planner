@@ -45,105 +45,109 @@ class _EditBudgetState extends State<EditBudget> {
       appBar: AppBar(
           title: Text("Update Budget", style: TextStyle(color: Colors.white)),
           iconTheme: new IconThemeData(color: Colors.white)),
-      body: Container(
-        margin: EdgeInsets.only(left: 10, right: 10),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            FocusScope.of(context).requestFocus(new FocusNode());
-          },
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Center(
-                  child: Text(
-                    "update Budget of ${event.title}",
-                    style: kTitleTextStyle,
-                    textAlign: TextAlign.center,
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height - 100,
+          margin: EdgeInsets.only(left: 10, right: 10),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Center(
+                    child: Text(
+                      "update Budget of ${event.title}",
+                      style: kTitleTextStyle,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 28.0),
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: txbudget,
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        budget = double.parse(value);
-                      },
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Total budget", labelText: 'Budget'),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      controller: txPaid,
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        paidAmount = double.parse(value);
-                      },
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Paid amount", labelText: 'Paid amount'),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      controller: txNotes,
-                      onChanged: (value) {
-                        notes = value;
-                      },
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 3,
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Notes", labelText: 'Notes'),
-                    ),
-                  ],
+                Container(
+                  padding: const EdgeInsets.only(top: 28.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: txbudget,
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          budget = double.parse(value);
+                        },
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: "Total budget", labelText: 'Budget'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: txPaid,
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          paidAmount = double.parse(value);
+                        },
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: "Paid amount", labelText: 'Paid amount'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: txNotes,
+                        onChanged: (value) {
+                          notes = value;
+                        },
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 3,
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: "Notes", labelText: 'Notes'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: button(
-                  onPress: () {
-                    FirebaseHelper fl = new FirebaseHelper();
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: button(
+                    onPress: () {
+                      FirebaseHelper fl = new FirebaseHelper();
 
-                    if (budget != null && paidAmount != null) {
-                      Budget tempBudget = new Budget(budget, paidAmount, notes);
+                      if (budget != null && paidAmount != null) {
+                        Budget tempBudget =
+                            new Budget(budget, paidAmount, notes);
 
-                      fl.addBudget(event.id, tempBudget);
-                      event.budget.budget = budget;
-                      event.budget.paidAmount = paidAmount;
-                      event.budget.note = notes;
-                      Navigator.popAndPushNamed(context, ViewBudget.id,
-                          arguments: event);
-                    }
-                    // Guest guest = Guest(email, name, _radioValue, note);
-                    // event.guests.add(guest);
-                    // fl.addGuest(event.id, guest, context);
+                        fl.addBudget(event.id, tempBudget);
+                        event.budget.budget = budget;
+                        event.budget.paidAmount = paidAmount;
+                        event.budget.note = notes;
+                        Navigator.popAndPushNamed(context, ViewBudget.id,
+                            arguments: event);
+                      }
+                      // Guest guest = Guest(email, name, _radioValue, note);
+                      // event.guests.add(guest);
+                      // fl.addGuest(event.id, guest, context);
 
-                    // showToast("Guest added");
-                  },
-                  title: "update",
+                      // showToast("Guest added");
+                    },
+                    title: "update",
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: button(
-                  onPress: () {
-                    Navigator.pop(context);
-                  },
-                  title: "Cancel",
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: button(
+                    onPress: () {
+                      Navigator.pop(context);
+                    },
+                    title: "Cancel",
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              )
-            ],
+                SizedBox(
+                  height: 20,
+                )
+              ],
+            ),
           ),
         ),
       ),

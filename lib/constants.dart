@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-const Color kMainColor = Color.fromRGBO(143, 148, 251, 1);
-const Color kMainColorOpacity = Color.fromRGBO(143, 148, 251, 0.7);
+const Color kMainColor = Color(0xff7045af);
+// const Color kMainColor = Color.fromRGBO(143, 148, 251, 1);
+const Color kMainColorOpacity = Color(0xff7045af);
+//const Color kMainColorOpacity = Color.fromRGBO(143, 148, 251, 0.7);
 const kSecondaryColor = Color(0xFF1ad1d1);
 const kSecondartColorOpacity = Color.fromRGBO(26, 209, 209, 0.7);
 

@@ -189,6 +189,24 @@ class _ViewGuestsState extends State<ViewGuests> {
                       guest.name,
                       style: kTitleTextStyle.copyWith(fontSize: 18),
                     ),
+                    Spacer(),
+                    Visibility(
+                      visible: guest.invited,
+                      child: Chip(
+                        avatar: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            Icons.done,
+                            color: Colors.green,
+                          ),
+                        ),
+                        backgroundColor: Colors.green,
+                        label: Text(
+                          'invited',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    )
                   ],
                 ),
                 Row(

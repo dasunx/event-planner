@@ -1,13 +1,13 @@
 import 'package:event_planner/constants.dart';
 import 'package:flutter/material.dart';
 
-class TextButton extends StatelessWidget {
+class MyTextButton extends StatelessWidget {
   final String text;
   final Function onPress;
   final double textSize;
   final FontWeight textWeight;
 
-  const TextButton(
+  const MyTextButton(
       {@required this.text,
       @required this.onPress,
       this.textSize,

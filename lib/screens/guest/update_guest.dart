@@ -72,141 +72,144 @@ class _UpdateGuestState extends State<UpdateGuest> {
             style: TextStyle(color: Colors.white),
           ),
           iconTheme: new IconThemeData(color: Colors.white)),
-      body: Container(
-        margin: EdgeInsets.only(left: 10, right: 10),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            FocusScope.of(context).requestFocus(new FocusNode());
-          },
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    "Update Guest ${event.guests[index].name.split(" ")[0]}",
-                    style: kTitleTextStyle,
-                    textAlign: TextAlign.center,
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height - 200,
+          margin: EdgeInsets.only(left: 10, right: 10),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      "Update Guest ${event.guests[index].name.split(" ")[0]}",
+                      style: kTitleTextStyle,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 28.0),
-                child: Column(
-                  children: [
-                    TextField(
-                      onChanged: (value) {
-                        email = value;
-                      },
-                      controller: emailController,
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Guest email", labelText: 'Email'),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      controller: nameController,
-                      onChanged: (value) {
-                        name = value;
-                      },
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Guest Name", labelText: 'Name'),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Radio(
-                          value: true,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioInput,
-                        ),
-                        Text('Male'),
-                        Radio(
-                          value: false,
-                          groupValue: _radioValue,
-                          onChanged: _handleRadioInput,
-                        ),
-                        Text('Female'),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    TextField(
-                      controller: noteController,
-                      onChanged: (value) {
-                        note = value;
-                      },
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 3,
-                      decoration: kTextFieldDecoration.copyWith(
-                          hintText: "Notes", labelText: 'Notes'),
-                    ),
-                  ],
+                Container(
+                  padding: const EdgeInsets.only(top: 28.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        onChanged: (value) {
+                          email = value;
+                        },
+                        controller: emailController,
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: "Guest email", labelText: 'Email'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: nameController,
+                        onChanged: (value) {
+                          name = value;
+                        },
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: "Guest Name", labelText: 'Name'),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: true,
+                            groupValue: _radioValue,
+                            onChanged: _handleRadioInput,
+                          ),
+                          Text('Male'),
+                          Radio(
+                            value: false,
+                            groupValue: _radioValue,
+                            onChanged: _handleRadioInput,
+                          ),
+                          Text('Female'),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextField(
+                        controller: noteController,
+                        onChanged: (value) {
+                          note = value;
+                        },
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 3,
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: "Notes", labelText: 'Notes'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: button(
-                  onPress: () {
-                    FirebaseHelper fl = new FirebaseHelper();
-                    Guest guest = event.guests[index];
-                    if (email != null &&
-                        name != null &&
-                        _radioValue != null &&
-                        note != null) {
-                      if (guest.email == email &&
-                          guest.name == name &&
-                          guest.gender == _radioValue &&
-                          guest.note == note) {
-                        showAlertDialog(
-                            context,
-                            "Nothing changed",
-                            "You didn't update this guest\'s details, do you need to continue editing?",
-                            "Yes",
-                            "No, Go back", () {
-                          Navigator.of(context, rootNavigator: true).pop();
-                        }, () {
-                          Navigator.of(context, rootNavigator: true).pop();
-                          // Navigator.popAndPushNamed(context, ViewGuests.id,
-                          //     arguments: event);
-                          Navigator.pop(context);
-                        });
-                      } else {
-                        event.guests[index].email = email;
-                        event.guests[index].name = name;
-                        event.guests[index].gender = _radioValue;
-                        event.guests[index].note = note;
-                        event.guests[index].invited = false;
-                        fl.updateGuests(event.guests, event.id);
-                        Navigator.popAndPushNamed(context, ViewGuests.id,
-                            arguments: event);
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: button(
+                    onPress: () {
+                      FirebaseHelper fl = new FirebaseHelper();
+                      Guest guest = event.guests[index];
+                      if (email != null &&
+                          name != null &&
+                          _radioValue != null &&
+                          note != null) {
+                        if (guest.email == email &&
+                            guest.name == name &&
+                            guest.gender == _radioValue &&
+                            guest.note == note) {
+                          showAlertDialog(
+                              context,
+                              "Nothing changed",
+                              "You didn't update this guest\'s details, do you need to continue editing?",
+                              "Yes",
+                              "No, Go back", () {
+                            Navigator.of(context, rootNavigator: true).pop();
+                          }, () {
+                            Navigator.of(context, rootNavigator: true).pop();
+                            // Navigator.popAndPushNamed(context, ViewGuests.id,
+                            //     arguments: event);
+                            Navigator.pop(context);
+                          });
+                        } else {
+                          event.guests[index].email = email;
+                          event.guests[index].name = name;
+                          event.guests[index].gender = _radioValue;
+                          event.guests[index].note = note;
+                          event.guests[index].invited = false;
+                          fl.updateGuests(event.guests, event.id);
+                          Navigator.popAndPushNamed(context, ViewGuests.id,
+                              arguments: event);
+                        }
                       }
-                    }
 
-                    // showToast("Guest added");
-                  },
-                  title: "Save",
+                      // showToast("Guest added");
+                    },
+                    title: "Save",
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: button(
-                  onPress: () {
-                    Navigator.pop(context);
-                  },
-                  title: "Cancel",
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: button(
+                    onPress: () {
+                      Navigator.pop(context);
+                    },
+                    title: "Cancel",
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              )
-            ],
+                SizedBox(
+                  height: 20,
+                )
+              ],
+            ),
           ),
         ),
       ),

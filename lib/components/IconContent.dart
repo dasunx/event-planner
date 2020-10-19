@@ -47,7 +47,7 @@ class IconContent extends StatelessWidget {
                   Text(
                     label,
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: kMainColor),
+                        fontWeight: FontWeight.bold, color: Colors.white),
                   )
                 ],
               ),
