@@ -149,8 +149,14 @@ class _AddEventState extends State<AddEvent> {
                       title: 'Create Event',
                       onPress: () {
                         if (name != null && venue != null) {
-                          Event event = new Event(name, venue, selectedDate,
-                              selectedDate, null, loggedInUser.uid, [], [], []);
+                          Event event = new Event(
+                              name,
+                              venue,
+                              note,
+                              selectedDate,
+                              selectedDate,
+                              null,
+                              loggedInUser.uid, [], [], []);
                           FirebaseHelper helper = new FirebaseHelper();
                           helper.addEvent(event, context);
                         }

@@ -79,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Event ev = new Event(
             element.data()['title'],
             element.data()['location'],
+            element.data()['note'],
             element.data()['startDate'].toDate(),
             DateTime(2020, 11, 02),
             tempBudget,
