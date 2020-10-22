@@ -4,6 +4,7 @@ import 'package:event_planner/screens/dashboard/dashboard.dart';
 import 'package:event_planner/screens/budget/add_budget_screen.dart';
 import 'package:event_planner/screens/budget/view_budget.dart';
 import 'package:event_planner/screens/event/add_event.dart';
+import 'package:event_planner/screens/event/update_event.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
 import 'package:event_planner/screens/guest/update_guest.dart';
 import 'package:event_planner/screens/onboard/onboard_screen.dart';
@@ -68,7 +69,8 @@ class MyApp extends StatelessWidget {
         EditBudget.id: (context) => EditBudget(),
         UpdateToDo.id: (context) => UpdateToDo(),
         UpdateShoppingList.id: (context) => UpdateShoppingList(),
-        Dashboard.id: (context) => Dashboard()
+        Dashboard.id: (context) => Dashboard(),
+        UpdateEvent.id: (context) => UpdateEvent(),
       },
     );
   }

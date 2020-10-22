@@ -36,6 +36,16 @@ class FirebaseHelper {
     showToast("Guest updated");
   }
 
+  void updateEvent(location, title, note, String id) {
+    _instance.runTransaction((transaction) async {
+      var res = await _instance
+          .collection('events')
+          .doc(id)
+          .update({'location': location, 'title': title, 'note': note});
+    });
+    showToast("Event updated");
+  }
+
   void addGuest(String id, Guest guest, BuildContext context) {
     List obj = [guest.toJson()];
     _instance.runTransaction((transaction) async {
