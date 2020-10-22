@@ -8,11 +8,11 @@ import 'package:intl/intl.dart';
 Widget buildEventCard(BuildContext context, int index, List<Event> items,
     String routeId, FocusNode myFocusNode) {
   final event = items[index];
+  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
   double width = MediaQuery.of(context).size.width - 20;
   return GestureDetector(
     onTap: () {
       myFocusNode.unfocus();
-
       Navigator.pushNamed(context, routeId, arguments: event);
     },
     child: Container(
@@ -32,10 +32,12 @@ Widget buildEventCard(BuildContext context, int index, List<Event> items,
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.event),
-                      Text(
-                        event.title,
-                        style: kTitleTextStyle.copyWith(fontSize: 20),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 1.0),
+                        child: Text(
+                          capitalize(event.title),
+                          style: kTitleTextStyle.copyWith(fontSize: 22),
+                        ),
                       ),
                     ],
                   ),
