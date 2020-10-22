@@ -7,8 +7,9 @@ import 'package:event_planner/classes/ToDoList.dart';
 
 class Event {
   String id;
-  final String title;
-  final String location;
+  String title;
+  String location;
+  String note;
   final DateTime startDate;
   final DateTime endDate;
   Budget budget;
@@ -16,8 +17,8 @@ class Event {
   List<Guest> guests;
   List<ShoppingList> shoppingList;
   List<ToDoList> todoList;
-  Event(this.title, this.location, this.startDate, this.endDate, this.budget,
-      this.userId, this.guests, this.shoppingList, this.todoList);
+  Event(this.title, this.location, this.note, this.startDate, this.endDate,
+      this.budget, this.userId, this.guests, this.shoppingList, this.todoList);
 
   set guestsList(Guest guest) {
     guests.add(guest);
@@ -34,6 +35,7 @@ class Event {
   Map<String, dynamic> toJson() => {
         'title': title,
         'location': location,
+        'note': note,
         'startDate': startDate,
         'endDate': endDate,
         'budget': budget,

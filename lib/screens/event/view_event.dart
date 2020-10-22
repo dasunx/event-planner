@@ -1,4 +1,5 @@
 import 'package:event_planner/classes/Event.dart';
+import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/components/AlertDialog.dart';
 import 'package:event_planner/components/IconContent.dart';
 import 'package:event_planner/components/WideStyledBtn.dart';
@@ -6,6 +7,7 @@ import 'package:event_planner/constants.dart';
 import 'package:event_planner/functions/FirebaseHelper.dart';
 import 'package:event_planner/screens/dashboard/dashboard.dart';
 import 'package:event_planner/screens/budget/view_budget.dart';
+import 'package:event_planner/screens/event/update_event.dart';
 import 'package:event_planner/screens/guest/view_guests.dart';
 import 'package:event_planner/screens/home_screen.dart';
 import 'package:event_planner/screens/shoppinglist/view_shoppinglsit.dart';
@@ -22,18 +24,6 @@ class ViewEvent extends StatefulWidget {
 class _ViewEventState extends State<ViewEvent> {
   Event event;
 
-/*  void deleteItem(int index) {
-    event.delete();
-  }
-
-  Future<void> deleteUser() {
-    return users
-        .doc('ABC123')
-        .delete()
-        .then((value) => print("User Deleted"))
-        .catchError((error) => print("Failed to delete user: $error"));
-  }*/
-
   @override
   Widget build(BuildContext context) {
     event = ModalRoute.of(context).settings.arguments;
@@ -49,17 +39,19 @@ class _ViewEventState extends State<ViewEvent> {
               flex: 3,
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        blurRadius: 5,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20.0),
-                        bottomRight: Radius.circular(20.0))),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      blurRadius: 5,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20.0),
+                    bottomRight: Radius.circular(20.0),
+                  ),
+                ),
                 child: Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
                   child: Column(
@@ -113,6 +105,13 @@ class _ViewEventState extends State<ViewEvent> {
                               Icons.delete_outline,
                               color: Colors.red,
                             ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.popAndPushNamed(context, UpdateEvent.id,
+                                  arguments: event);
+                            },
+                            icon: Icon(Icons.edit),
                           ),
                         ],
                       ),
