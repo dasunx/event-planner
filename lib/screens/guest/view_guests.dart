@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/classes/Guest.dart';
 import 'package:event_planner/classes/RouteArguments.dart';
@@ -11,6 +13,8 @@ import 'package:event_planner/functions/FirebaseHelper.dart';
 import 'package:event_planner/screens/guest/add_guest.dart';
 import 'package:event_planner/screens/guest/update_guest.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class ViewGuests extends StatefulWidget {
   static const String id = 'view_guest';
@@ -26,6 +30,7 @@ class _ViewGuestsState extends State<ViewGuests> {
   var guestsList;
   var guests = List<Guest>();
   bool conditionx = false;
+  bool inviting = false;
   @override
   void initState() {
     myFocusNode = FocusNode();
@@ -71,10 +76,39 @@ class _ViewGuestsState extends State<ViewGuests> {
     });
   }
 
+  void inviteGuest(Guest inGuest) async {
+    setState(() {
+      inviting = true;
+    });
+    final http.Response response =
+        await http.post("https://nodemail-server.herokuapp.com/api/invitation/",
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode(<String, dynamic>{
+              "senderMail": inGuest.email,
+              "eventName": event.title,
+              "senderName": "Eventplaneer",
+              "callbackUrl": "https://google.lk",
+              "time": DateFormat.yMMMd().format(event.startDate).toString(),
+              "venue": event.location,
+              "msg": event.note != null
+                  ? event.note
+                  : "you have been invited for this event"
+            }));
+    setState(() {
+      inviting = false;
+      inGuest.invited = true;
+    });
+    FirebaseHelper firebaseHelper = new FirebaseHelper();
+    firebaseHelper.updateGuests(guests, event.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (time == 1) {
       event = ModalRoute.of(context).settings.arguments;
+
       if (event.guests != null) {
         guestsList = event.guests;
         guests.addAll(guestsList);
@@ -191,6 +225,20 @@ class _ViewGuestsState extends State<ViewGuests> {
                     ),
                     Spacer(),
                     Visibility(
+                      visible: inviting && !guest.invited,
+                      child: Chip(
+                        avatar: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: CircularProgressIndicator(),
+                        ),
+                        backgroundColor: Colors.blue,
+                        label: Text(
+                          'inviting',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    Visibility(
                       visible: guest.invited,
                       child: Chip(
                         avatar: CircleAvatar(
@@ -264,12 +312,7 @@ class _ViewGuestsState extends State<ViewGuests> {
                             padding: const EdgeInsets.all(8.0),
                             child: button(
                               onPress: () {
-                                print(guest.invited
-                                    ? "Already Invited"
-                                    : "Invite");
-                                setState(() {
-                                  guest.invited = true;
-                                });
+                                inviteGuest(guest);
                               },
                               title: guest.invited ? "Invited" : "invite",
                             ),
