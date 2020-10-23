@@ -25,6 +25,7 @@ dependencies:
   shared_preferences: ^0.5.12
   charts_flutter: ^0.9.0
   pie_chart: ^1.3.0
+  http: ^0.12.2
 
 
 dev_dependencies:
