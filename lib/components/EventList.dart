@@ -45,7 +45,7 @@ Widget buildEventCard(BuildContext context, int index, List<Event> items,
                     children: [
                       Icon(Icons.access_time),
                       Text(
-                        "${DateFormat.yMMMd().format(event.startDate).toString()}",
+                        "${DateFormat.yMMMd().format(event.startDate).toString()} : ${DateFormat.Hm().format(event.startDate).toString()}",
                         style: TextStyle(
                           color: Colors.black,
                         ),
@@ -66,22 +66,22 @@ Widget buildEventCard(BuildContext context, int index, List<Event> items,
                 ],
               ),
             ),
-            Container(
-              height: 150,
-              width: (width / 20) * 7,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    'images/event$index.jpg',
-                  ),
-                  colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.4), BlendMode.dstOut),
-                  fit: BoxFit.cover,
-                  alignment: Alignment.lerp(
-                      Alignment.center, Alignment.centerRight, 1),
-                ),
-              ),
-            ),
+            // Container(
+            //   height: 150,
+            //   width: (width / 20) * 7,
+            //   decoration: BoxDecoration(
+            //     image: DecorationImage(
+            //       image: AssetImage(
+            //         'images/event$index.jpg',
+            //       ),
+            //       colorFilter: ColorFilter.mode(
+            //           Colors.black.withOpacity(0.4), BlendMode.dstOut),
+            //       fit: BoxFit.cover,
+            //       alignment: Alignment.lerp(
+            //           Alignment.center, Alignment.centerRight, 1),
+            //     ),
+            //   ),
+            // ),
             // Container(
             //   child: ShaderMask(
             //     shaderCallback: (rect) {

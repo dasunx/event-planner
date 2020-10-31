@@ -70,11 +70,11 @@ class _ViewEventState extends State<ViewEvent> {
                       Row(
                         children: [
                           eventDetails(
-                            "Date",
+                            "Date and time",
                           ),
                           Spacer(),
                           eventDetails(
-                              "${DateFormat.yMMMd().format(event.startDate).toString()}"),
+                              "${DateFormat.yMMMd().format(event.startDate).toString()} ${DateFormat.Hm().format(event.startDate).toString()}"),
                         ],
                       ),
                       Divider(),

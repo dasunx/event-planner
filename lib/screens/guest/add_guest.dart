@@ -118,7 +118,8 @@ class _AddGuestState extends State<AddGuest> {
                         keyboardType: TextInputType.multiline,
                         maxLines: 3,
                         decoration: kTextFieldDecoration.copyWith(
-                            hintText: "Notes", labelText: 'Notes'),
+                            hintText: "Invitation message",
+                            labelText: 'Invitation message'),
                       ),
                     ],
                   ),

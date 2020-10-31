@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:event_planner/classes/Event.dart';
 import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/components/Toast.dart';
@@ -20,6 +21,7 @@ class AddEvent extends StatefulWidget {
 final globalScaffoldKey = GlobalKey<ScaffoldState>();
 User loggedInUser;
 final _firestore = FirebaseFirestore.instance;
+final format = DateFormat("yyyy-MM-dd HH:mm");
 
 class _AddEventState extends State<AddEvent> {
   final _auth = FirebaseAuth.instance;
@@ -100,25 +102,31 @@ class _AddEventState extends State<AddEvent> {
                             hintText: 'Charle\'s Birthday',
                             labelText: 'Event Name'),
                       ),
-                      new RaisedButton(
-                        padding: EdgeInsets.only(
-                            left: 12, right: 170, top: 5, bottom: 5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(12.0),
-                          side: BorderSide(color: kMainColor),
-                        ),
-                        color: Colors.white,
-                        onPressed: () => _selectDate(context),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: new Text(
-                            "Select Date - ${DateFormat.yMMMd().format(selectedDate).toString()}",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black45,
-                            ),
-                          ),
-                        ),
+                      DateTimeField(
+                        decoration: kTextFieldDecoration.copyWith(
+                            hintText: 'Charle\'s Birthday',
+                            labelText: 'Date and time'),
+                        format: format,
+                        onShowPicker: (context, currentValue) async {
+                          final date = await showDatePicker(
+                              context: context,
+                              firstDate: DateTime.now(),
+                              initialDate: currentValue ?? DateTime.now(),
+                              lastDate: DateTime(2100));
+                          if (date != null) {
+                            final time = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.fromDateTime(
+                                  currentValue ?? DateTime.now()),
+                            );
+                            setState(() {
+                              selectedDate = DateTimeField.combine(date, time);
+                            });
+                            return DateTimeField.combine(date, time);
+                          } else {
+                            return currentValue;
+                          }
+                        },
                       ),
                       TextField(
                         onTap: () {},

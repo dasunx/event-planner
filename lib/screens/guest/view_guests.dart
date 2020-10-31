@@ -31,6 +31,7 @@ class _ViewGuestsState extends State<ViewGuests> {
   var guests = List<Guest>();
   bool conditionx = false;
   bool inviting = false;
+  int ivUser;
   @override
   void initState() {
     myFocusNode = FocusNode();
@@ -76,8 +77,9 @@ class _ViewGuestsState extends State<ViewGuests> {
     });
   }
 
-  void inviteGuest(Guest inGuest) async {
+  void inviteGuest(Guest inGuest, int index) async {
     setState(() {
+      ivUser = index;
       inviting = true;
     });
     final http.Response response =
@@ -92,8 +94,8 @@ class _ViewGuestsState extends State<ViewGuests> {
               "callbackUrl": "https://google.lk",
               "time": DateFormat.yMMMd().format(event.startDate).toString(),
               "venue": event.location,
-              "msg": event.note != null
-                  ? event.note
+              "msg": inGuest.note != null
+                  ? inGuest.note
                   : "you have been invited for this event"
             }));
     setState(() {
@@ -225,7 +227,7 @@ class _ViewGuestsState extends State<ViewGuests> {
                     ),
                     Spacer(),
                     Visibility(
-                      visible: inviting && !guest.invited,
+                      visible: inviting && !guest.invited && ivUser == index,
                       child: Chip(
                         avatar: CircleAvatar(
                           backgroundColor: Colors.white,
@@ -312,7 +314,11 @@ class _ViewGuestsState extends State<ViewGuests> {
                             padding: const EdgeInsets.all(8.0),
                             child: button(
                               onPress: () {
-                                inviteGuest(guest);
+                                if (!guest.invited) {
+                                  inviteGuest(guest, index);
+                                } else {
+                                  showToast("already invited");
+                                }
                               },
                               title: guest.invited ? "Invited" : "invite",
                             ),
