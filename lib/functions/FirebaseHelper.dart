@@ -68,6 +68,20 @@ class FirebaseHelper {
     });
   }
 
+  void updateToDo(List<ToDoList> todo, String id) {
+    List objs = new List();
+    todo.forEach((element) {
+      objs.add(element.toJson());
+    });
+    _instance.runTransaction((transaction) async {
+      var res = await _instance
+          .collection('events')
+          .doc(id)
+          .update({'todoList': objs});
+    });
+    showToast("Todo updated");
+  }
+
   void addShoppingList(String id, ShoppingList shoppingList) {
     List obj = [shoppingList.toJson()];
     _instance.runTransaction((transaction) async {
@@ -77,6 +91,20 @@ class FirebaseHelper {
           .update({'shoppingList': FieldValue.arrayUnion(obj)});
       showToast("Shopping item added");
     });
+  }
+
+  void updateShopping(List<ShoppingList> shopping, String id) {
+    List objs = new List();
+    shopping.forEach((element) {
+      objs.add(element.toJson());
+    });
+    _instance.runTransaction((transaction) async {
+      var res = await _instance
+          .collection('events')
+          .doc(id)
+          .update({'shoppingList': objs});
+    });
+    showToast("Shopping list updated");
   }
 
   void addBudget(String id, Budget budget) {

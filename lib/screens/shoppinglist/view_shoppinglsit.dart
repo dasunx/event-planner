@@ -6,6 +6,7 @@ import 'package:event_planner/components/EmptyList.dart';
 import 'package:event_planner/components/SearchBar.dart';
 import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/functions/FirebaseHelper.dart';
 import 'package:event_planner/screens/shoppinglist/add_shoppinglist.dart';
 import 'package:event_planner/screens/shoppinglist/update_shopping_list.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,8 @@ class _ViewShoppingListState extends State<ViewShoppingList> {
   void deleteItem(int index) {
     //todo add firebase function
     event.shoppingList.removeAt(index);
+    FirebaseHelper fl = new FirebaseHelper();
+    fl.updateShopping(event.shoppingList, event.id);
     setState(() {
       shopItems.clear();
       shopItems.addAll(event.shoppingList);
@@ -197,6 +200,8 @@ class _ViewShoppingListState extends State<ViewShoppingList> {
                   value: item.purchased,
                   onChanged: (value) {
                     item.purchased = value;
+                    FirebaseHelper fl = new FirebaseHelper();
+                    fl.updateShopping(shopItems, event.id);
                     myFocusNode.unfocus();
                     myCon.clear();
                     setState(() {

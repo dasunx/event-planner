@@ -3,6 +3,7 @@ import 'package:event_planner/classes/RouteArguments.dart';
 import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/functions/FirebaseHelper.dart';
 import 'package:event_planner/screens/shoppinglist/view_shoppinglsit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -170,6 +171,8 @@ class _UpdateShoppingListState extends State<UpdateShoppingList> {
                       event.shoppingList[index].price = price;
                       event.shoppingList[index].note = note;
                       event.shoppingList[index].purchased = purchased;
+                      FirebaseHelper fl = new FirebaseHelper();
+                      fl.updateShopping(event.shoppingList, event.id);
                       Navigator.popAndPushNamed(context, ViewShoppingList.id,
                           arguments: event);
                       showToast("item updated");
