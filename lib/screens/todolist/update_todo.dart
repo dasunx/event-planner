@@ -4,6 +4,7 @@ import 'package:event_planner/classes/ToDoList.dart';
 import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/components/button.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/functions/FirebaseHelper.dart';
 import 'package:event_planner/screens/todolist/view_todo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -129,14 +130,6 @@ class _UpdateToDoState extends State<UpdateToDo> {
                 padding: const EdgeInsets.all(8.0),
                 child: button(
                   onPress: () {
-                    //todo firebase function{
-                    // FirebaseHelper fl = new FirebaseHelper();
-                    // ToDoList td = ToDoList(name, state, note);
-
-                    // event.todoList.add(td);
-                    // fl.addTodo(event.id, td, context);
-                    //}
-                    // fl.addGuest(event.id, guest, context);
                     if (name != null && note != null) {
                       if (name != event.todoList[index].title ||
                           note != event.todoList[index].details ||
@@ -144,7 +137,9 @@ class _UpdateToDoState extends State<UpdateToDo> {
                         event.todoList[index].title = name;
                         event.todoList[index].details = note;
                         event.todoList[index].completed = state;
-                        showToast("Item updated");
+
+                        FirebaseHelper fl = new FirebaseHelper();
+                        fl.updateToDo(event.todoList, event.id);
                       } else {
                         showToast("Nothing changed");
                         Navigator.pop(context);

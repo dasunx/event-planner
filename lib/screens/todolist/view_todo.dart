@@ -6,6 +6,7 @@ import 'package:event_planner/components/EmptyList.dart';
 import 'package:event_planner/components/SearchBar.dart';
 import 'package:event_planner/components/Toast.dart';
 import 'package:event_planner/constants.dart';
+import 'package:event_planner/functions/FirebaseHelper.dart';
 import 'package:event_planner/screens/todolist/add_todo.dart';
 import 'package:event_planner/screens/todolist/update_todo.dart';
 import 'package:flutter/material.dart';
@@ -57,8 +58,10 @@ class _ViewToDoState extends State<ViewToDo> {
   }
 
   void deleteItem(int index) {
-    //todo add firebase function
+    FirebaseHelper fl = new FirebaseHelper();
     event.todoList.removeAt(index);
+    fl.updateToDo(event.todoList, event.id);
+
     setState(() {
       toDoItems.clear();
       toDoItems.addAll(event.todoList);
@@ -179,6 +182,8 @@ class _ViewToDoState extends State<ViewToDo> {
                     setState(() {
                       item.completed = value;
                     });
+                    FirebaseHelper fl = new FirebaseHelper();
+                    fl.updateToDo(toDoItems, event.id);
                   },
                 ),
               ),
@@ -219,7 +224,7 @@ class _ViewToDoState extends State<ViewToDo> {
                         child: Row(
                           children: [
                             Text(
-                              item.details,
+                              "${item.details}",
                             ),
                             Spacer(),
                             IconButton(
@@ -240,6 +245,7 @@ class _ViewToDoState extends State<ViewToDo> {
                                     "Delete",
                                     "No", () {
                                   deleteItem(index);
+
                                   Navigator.of(context, rootNavigator: true)
                                       .pop();
                                   showToast("Item deleted");
